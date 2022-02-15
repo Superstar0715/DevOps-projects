@@ -1,0 +1,4 @@
+[servers]
+192.168.32.129 ansible_user=asutliff #media server#
+192.168.32.130 ansible_user=asutliff #node1#
+peanuts
