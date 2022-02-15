@@ -1,0 +1,15 @@
+#vim etc config
+in /etc/vim/vimrc
+set number
+set hlsearch
+hi Search cterm=NONE ctermfg=white ctermbg=magenta
+
+#install apps 
+#docker, aws, docker compose, ssh
+#configure ssh to only accept version 2
+#add docker repo to /etc/apt/sources.list
+
+
+#push project files into server
+
+
