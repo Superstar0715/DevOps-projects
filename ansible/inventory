@@ -1,5 +1,5 @@
 [control]
-172.23.17.103
+127.0.0.1
 
 [servers]
 192.168.32.129 ansible_user=asutliff #media server#

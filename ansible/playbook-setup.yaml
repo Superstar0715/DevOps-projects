@@ -1,8 +1,91 @@
-#vim etc config
-in /etc/vim/vimrc
-set number
-set hlsearch
-hi Search cterm=NONE ctermfg=white ctermbg=magenta
+---
+- name: copy dot files standard setup
+  hosts: servers
+  become: true
+  tasks:
+  - name: copy host names for host name resolution
+    copy:
+      src: /etc/hosts
+      dest: /etc/hosts
+      owner: root
+      group: root
+      mode: u=rw,g=r,o=r
+  #- name: copy resolve.conf for dns resolution (changed this to 8.8.8.8 and 8.8.4.4 to troubleshoot docker connectivity)
+  #  copy:
+  #    src: /etc/resolve.conf
+  #    dest: /etc/resolve.conf
+  #    owner: root
+  #    group: root
+  #    mode: u=rw,g=r,o=r
+  - name: copy vim config
+    copy:
+      src: /etc/vim/vimrc
+      dest: /etc/vim/vimrc
+      owner: root
+      group: root
+      mode: u=rw,g=r,o=r
+      force: yes
+  - name: copy SSH config to only allow SSH2 connections
+    copy: #keep an eye on this one, might bug out SSH if it changes in the middle of a conenction#
+      src: /etc/ssh/sshd_config
+      dest: /etc/ssh/sshd_config
+      owner: root
+      group: root
+      force: yes
+  - name: copy reposatory lists
+    copy:
+      src: /etc/apt/sources.list
+      dest: /etc/apt/sources.list
+      owner: root
+      group: root
+      force: yes
+  - name: copy gpg keys
+    copy:
+      src: /usr/share/keyrings
+      dest: /usr/share/keyrings
+      owner: root
+      group: root
+      force: yes
+  #- name: Copy a new "sudoers" file into place, after passing validation with visudo
+    #copy:
+      #src: /mine/sudoers
+      #dest: /etc/sudoers
+      #validate: /usr/sbin/visudo -cf %s
+  - name: copy project folders 
+    copy:
+      src: /home/asutliff/DevOps-Projects
+      dest: /home/asutliff/DevOps-Projects
+      owner: asutliff
+      group: asutliff
+      force: yes
+      mode: u=rwx,g=rx,o=rx
+  - name: copy docker persistant directories #I would like this to be able to be on a mounted drive...
+    copy:
+      src: /srv
+      dest: /srv
+      owner: root
+      group: root
+      mode: u=rwx,g=rx,o=rx
+      force: yes
+
+- name: install apps to servers
+  hosts: servers
+  become: true
+  tasks:
+  - name: check docker install
+    apt:
+      name: docker
+      state: present
+      update_cache: true
+  - name: check kubernetes
+    apt:
+      name: kubernetes
+      state: present
+      
+
+
+
+
 
 #install apps 
 #docker, aws, docker compose, ssh

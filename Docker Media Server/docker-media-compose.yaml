@@ -1,0 +1,207 @@
+---
+version: "3.6"
+services:
+  portainer:
+    image: portainer/portainer
+    container_name: portainer
+    restart: always
+    command: -H unix:///var/run/docker.sock
+    ports:
+      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /svr/Portainer/data:/data
+      - /svr/shared:/shared
+    environment:
+      - TZ=${TZ}
+  emby:
+    image: linuxserver/emby
+    container_name: emby
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - UMASK_SET=022 #optional
+    volumes:
+    #- /srv/dev-disk-by-uuid-0d4a201c-b292-412d-ade6-cc5561e54f1f/Configs/Emby:/config
+      - /srv/Configs/Emby:/config
+    #- /srv/dev-disk-by-uuid-0d4a201c-b292-412d-ade6-cc5561e54f1f/TV:/data/tvshows
+      - /srv/TV:/data/tvshows
+    #- /srv/dev-disk-by-uuid-0d4a201c-b292-412d-ade6-cc5561e54f1f/Movies:/data/movies
+      - /srv/Movies:/data/movies
+    ports:
+      - 8096:8096
+      - 8920:8920 #optional for secure connections
+    restart: unless-stopped
+    
+  embystat:
+    image: ghcr.io/linuxserver/embystat
+    container_name: embystat
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+    #- /srv/dev-disk-by-uuid-0d4a201c-b292-412d-ade6-cc5561e54f1f/Configs/EmbyStat:/config
+      - /srv/Configs/EmbyStat:/config
+    ports:
+      - 6555:6555
+    restart: unless-stopped
+    
+  jackett:
+    image: linuxserver/jackett
+    container_name: jackett
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+     # - /srv/dev-disk-by-uuid-0d4a201c-b292-412d-ade6-cc5561e54f1f/Configs/Jackett:/config
+     # - /srv/dev-disk-by-uuid-0d4a201c-b292-412d-ade6-cc5561e54f1f/Torrents:/downloads
+      - /srv/Configs/Jackett:/config
+      - /srv/Torrents:/downloads
+    ports:
+      - 9117:9117
+    restart: unless-stopped
+    
+  organizr:
+    container_name: organizr
+    hostname: organizr
+    image: organizr/organizr
+    restart: unless-stopped
+    ports:
+        - 90:80
+    volumes:
+       # - /srv/dev-disk-by-uuid-0d4a201c-b292-412d-ade6-cc5561e54f1f/Configs/Organizr:/config
+        - /srv/Configs/Organizr:/config
+    environment:
+        - fpm=true #true or false | using true will provide better performance
+        - branch=v2-master #v2-master or #v2-develop
+        - PUID=${PUID}
+        - PGID=${PGID}
+        - TZ=${TZ}
+    
+  qbittorrentvpn:
+    image: markusmcnugen/qbittorrentvpn
+    container_name: qbittorrentvpn
+    privileged: true   
+    environment:
+        #VPN USER AND PASS GOES HERE
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - WEBUI_PORT_ENV=8080
+      - INCOMING_PORT_ENV=8999
+      - VPN_ENABLED=yes
+      - LAN_NETWORK=192.168.32.0/24 #adjust this to YOUR network settings
+      - NAME_SERVERS=1.1.1.1,1.0.0.1 #you can use whatever DNS provider you want
+    ports:
+      - 8080:8080
+      - 8999:8999
+      - 8999:8999/udp
+    volumes:
+    #  - /srv/dev-disk-by-uuid-0d4a201c-b292-412d-ade6-cc5561e54f1f/Configs/QBittorrentVPN:/config
+    #  - /srv/dev-disk-by-uuid-0d4a201c-b292-412d-ade6-cc5561e54f1f/Torrents:/downloads
+      - /srv/Configs/QBittorrentVPN:/config
+      - /srv/Torrents:/downloads
+      - /etc/timezone:/etc/timezone:ro #This is for TimeZone
+    restart: unless-stopped
+    
+  radarr:
+    image: linuxserver/radarr
+    container_name: radarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - UMASK_SET=022 #optional
+    volumes:
+     # - /srv/dev-disk-by-uuid-0d4a201c-b292-412d-ade6-cc5561e54f1f/Configs/Radarr:/config
+     # - /srv/dev-disk-by-uuid-0d4a201c-b292-412d-ade6-cc5561e54f1f/Movies:/movies
+     # - /srv/dev-disk-by-uuid-0d4a201c-b292-412d-ade6-cc5561e54f1f/Torrents:/downloads
+      - /srv/Configs/Radarr:/config
+      - /srv/Movies:/movies
+      - /srv/Torrents:/downloads
+    ports:
+      - 7878:7878
+    restart: unless-stopped
+    
+  sabnzbd:
+    image: ghcr.io/linuxserver/sabnzbd
+    container_name: sabnzbd
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+    #  - /srv/dev-disk-by-uuid-0d4a201c-b292-412d-ade6-cc5561e54f1f/Configs/Sabnzbd:/config
+    # - /srv/dev-disk-by-uuid-0d4a201c-b292-412d-ade6-cc5561e54f1f/Downloads:/downloads
+    #  - /srv/dev-disk-by-uuid-0d4a201c-b292-412d-ade6-cc5561e54f1f/Downloads/Incomplete:/incomplete-downloads #optional
+      - /srv/Configs/Sabnzbd:/config
+      - /srv/Downloads:/downloads
+      - /srv/Downloads/Incomplete:/incomplete-downloads #optional
+    ports:
+      - 8181:8080
+      - 9191:9090
+    restart: unless-stopped
+    
+  sonarr:
+    image: linuxserver/sonarr
+    container_name: sonarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - UMASK_SET=022
+    volumes:
+    #  - /srv/dev-disk-by-uuid-0d4a201c-b292-412d-ade6-cc5561e54f1f/Configs/Sonarr:/config
+    #  - /srv/dev-disk-by-uuid-0d4a201c-b292-412d-ade6-cc5561e54f1f/TV:/tv
+    # - /srv/dev-disk-by-uuid-0d4a201c-b292-412d-ade6-cc5561e54f1f/Torrents:/downloads
+      - /srv/Configs/Sonarr:/config
+      - /srv/TV:/tv
+      - /srv/Torrents:/downloads
+    ports:
+      - 8989:8989
+    restart: unless-stopped
+
+## System Monitoring
+
+  prometheus:
+      image: prom/prometheus
+      container_name: prometheus
+      environment:
+        - PUID=${PUID}
+        - PGID=${PGID}
+        - TZ=${TZ}
+        - UMASK_SET=022
+      volumes:
+       # - /srv/dev-disk-by-uuid-0d4a201c-b292-412d-ade6-cc5561e54f1f/Configs/Prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+        - /srv/Configs/Prometheus/prometheus.yaml:/etc/prometheus/prometheus.yaml
+      ports:
+        - 9292:9090
+      restart: unless-stopped
+
+  node-exporter:
+      image: quay.io/prometheus/node-exporter:latest
+      container_name: node-exporter
+      network_mode: host
+      environment:
+        - PUID=${PUID}
+        - PGID=${PGID}
+        - TZ=${TZ}
+      volumes:
+        - /:/host:ro,rslave
+      ports:
+        - 9100:9090
+      restart: unless-stopped
+    
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - UMASK_SET=022
+    ports:
+      - 3000:3000
+    restart: unless-stopped
