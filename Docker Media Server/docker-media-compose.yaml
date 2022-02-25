@@ -86,8 +86,7 @@ services:
     container_name: qbittorrentvpn
     privileged: true   
     environment:
-      - VPN_USERNAME=dres2dogs@gmail.com
-      - VPN_PASSWORD=69ZzUsGujBVy5VU
+      #CREDS GO HERE
       - PUID=${PUID}
       - PGID=${PGID}
       - WEBUI_PORT_ENV=8080
