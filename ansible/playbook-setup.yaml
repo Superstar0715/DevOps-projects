@@ -10,10 +10,10 @@
       owner: root
       group: root
       mode: u=rw,g=r,o=r
-  - name: copy resolve.conf for dns resolution #(changed this to 8.8.8.8 and 8.8.4.4 to troubleshoot docker connectivity)
+  - name: copy resolv.conf for dns resolution #(changed this to 8.8.8.8 and 8.8.4.4 to troubleshoot docker connectivity)
     copy:
-      src: /etc/resolve.conf
-      dest: /etc/resolve.conf
+      src: /etc/resolv.conf
+      dest: /etc/resolv.conf
       owner: root
       group: root
       mode: u=rw,g=r,o=r
@@ -30,16 +30,16 @@
       dest: /etc/ssh/sshd_config
       owner: root
       group: root
-  - name: copy reposatory lists
-    copy:
-      src: /etc/apt/sources.list
-      dest: /etc/apt/sources.list
-      owner: root
-      group: root
+  #- name: copy reposatory lists (this actually has a builtin)
+  #  copy:
+  #    src: /etc/apt/sources.list
+  #    dest: /etc/apt/sources.list
+  #    owner: root
+  #    group: root
   - name: copy gpg keys
     copy:
-      src: /usr/share/keyrings/
-      dest: /usr/share/keyrings/
+      src: /usr/share/keyrings
+      dest: /usr/share/
       owner: root
       group: root
   #- name: Copy a new "sudoers" file into place, after passing validation with visudo
@@ -49,20 +49,12 @@
       #validate: /usr/sbin/visudo -cf %s
   - name: copy project folders 
     copy:
-      src: /home/asutliff/DevOps-Projects/
-      dest: /home/asutliff/DevOps-Projects/
+      src: /home/asutliff/DevOps-Projects
+      dest: /home/asutliff/
       owner: asutliff
       group: asutliff
       force: yes
       mode: u=rwx,g=rx,o=rx
-  - name: copy docker persistant directories #I would like this to be able to be on a mounted drive...
-    copy:
-      src: /srv
-      dest: /srv
-      owner: root
-      group: root
-      mode: u=rwx,g=rx,o=rx
-      force: yes
 
 - name: install apps to servers
   hosts: labservers:mediaserver
@@ -73,18 +65,42 @@
       name: docker
       state: present
       update_cache: true
+  - name: check docker-compose install
+    apt:
+      name: docker-compose
+      state: present
   - name: check kubernetes
     apt:
       name: kubernetes
       state: present
       
-- name: configure ufw for media server
+- name: configs for media server
   hosts: mediaserver
   become: true
   tasks:
+  - name: copy docker configs 
+    copy:
+      src: /srv/Configs/{{ directories }}
+      dest: /srv/Configs/
+      owner: asutliff
+      group: asutliff
+      mode: u=rwx,g=rwx,o=rwx
+    loop:
+      - QBittorrentVPN
+      - Prometheus
+  - name: set file permissions for volumes, if they exist
+    file:
+      path: /srv/{{ item }}
+      owner: asutliff
+      group: docker
+      mode: 0765
+    loop:
+      - TV
+      - Movies
+      - Downloads
   - name: set ssh for access only from the my host machine
     ufw:
-      rule: limit
+      rule: allow
       name: OpenSSH
       src: 198.168.1.35
   - name: open ports to incomming requests on trusted devices vlan
@@ -93,7 +109,20 @@
       direction: in
       src: 192.168.1.0/24
       port: 3000:9117
-  
+      proto: tcp
+  - name: temporary allow out while I don't have access to a vlan and proxy server
+    ufw: 
+      rule: allow
+      direction: in
+      dest: 192.168.1.0/24
+      port: 3000:9117
+      proto: udp
+  - name: udp for emby 
+    ufw: 
+      rule: allow
+      direction: in
+      dest: 192.168.1.0/24
+      port: 90
 
 
 
