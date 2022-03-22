@@ -27,6 +27,7 @@ services:
       - /srv/Configs/Emby:/config
       - /srv/TV:/data/tvshows
       - /srv/Movies:/data/movies
+      - /srv/XXX:/data/XXX
     ports:
       - 8096:8096
       - 8920:8920 #optional for secure connections
@@ -80,8 +81,8 @@ services:
     container_name: qbittorrentvpn
     privileged: true   
     environment:
-      - VPN_USERNAME=USERNAME
-      - VPN_PASSWORD=PASSWORD
+      - VPN_USERNAME=${VPN_USERNAME}
+      - VPN_PASSWORD=${VPN_PASSWORD}
       - PUID=${PUID}
       - PGID=${PGID}
       - WEBUI_PORT_ENV=8080
