@@ -1,0 +1,3 @@
+mtgsdk
+beautifulsoup4
+openpyxl

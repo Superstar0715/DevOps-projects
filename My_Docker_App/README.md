@@ -1,0 +1,1 @@
+dockerized version of my mtg pricer app 
