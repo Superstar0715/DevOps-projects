@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - ./MTG_Card_Organizer/**
+      - './MTG_Card_Organizer/**'
   workflow_dispatch:
   
 jobs:
