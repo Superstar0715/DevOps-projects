@@ -20,4 +20,4 @@ jobs:
       working-directory: ./MTG_Card_Organizer
       run: docker build . --file Dockerfile --tag tanchwa/mtg_card_organizer:latest
     - name: Push the Docker image
-      run: docker logun -u tanchwa -p ${{ secrets.DOCKER_TOKEN }} && docker push tanchwa/mtg_card_prganizer:latest
+      run: docker login -u tanchwa -p ${{ secrets.DOCKER_TOKEN }} && docker push tanchwa/mtg_card_prganizer:latest
