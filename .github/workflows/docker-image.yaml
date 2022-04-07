@@ -5,17 +5,19 @@ on:
     branches:
       - main
     paths:
-      - Tanchwa/DevOps-Projects/MTG_Card_Organizer/**
-
+      - ./MTG_Card_Organizer/**
+  workflow_dispatch:
+  
 jobs:
 
   build:
 
     runs-on: ubuntu-latest
-
+    
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build Tanchwa/DevOps-Projects/MTG_Card_Organizer/ --file Dockerfile --tag tanchwa/mtg_card_organizer:latest
+      working-directory: ./MTG_Card_Organizer
+      run: docker build . --file Dockerfile --tag tanchwa/mtg_card_organizer:latest
     - name: Push the Docker image
-      run: docker logun -u tanchwa -p ${{ secrets.DOCKER_TOKEN }} && docker push tanchwa/mtg_card_prganizer:latest
+      run: docker login -u tanchwa -p ${{ secrets.DOCKER_TOKEN }} && docker push tanchwa/mtg_card_organizer:latest
