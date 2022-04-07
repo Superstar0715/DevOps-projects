@@ -4,13 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - DevOps-Projects/MTG_Card_Organizer/**
-  pull_request:
-    branches:
-      - main
-    paths:
-      - DevOps-Projects/MTG_Card_Organizer/**
 
 
 
