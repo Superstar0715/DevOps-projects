@@ -6,7 +6,8 @@ on:
       - main
     paths:
       - Tanchwa/DevOps-Projects/MTG_Card_Organizer/**
-
+  workflow_dispatch:
+  
 jobs:
 
   build:
