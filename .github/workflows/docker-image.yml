@@ -5,7 +5,7 @@ on:
     branches:
     - main
     paths:
-    - DevOps-Projects/MTG_Card_Organizer/**
+    - DevOps-Projects/MTG_Card_Organizer
 
 
 jobs:
