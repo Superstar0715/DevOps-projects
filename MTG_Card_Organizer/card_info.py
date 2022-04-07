@@ -71,7 +71,7 @@ if __name__ == "__main__":
     multiverse_ids = [1135, 1, 2303, 74324, 525598, 10422]
     for multiverse_id in multiverse_ids:
         test_script(multiverse_id)
-    card_name, set_name = input("Hi, Leron! Try Me! Enter a card and set number to see its price!\n (formated in 'card_name, set_name):\n")
+    card_name, set_name = input("Hi Leron! Try Me! Enter a card and set number to see its price!\n (formated in 'card_name, set_name):\n")
     card_price = card_price_lookup(card_name, set_name)
     print(f"Your Card {card_name} from {set_name} is {card_price}")
 
