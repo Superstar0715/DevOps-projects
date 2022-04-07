@@ -1,0 +1,22 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches:
+    - main
+    paths:
+    - DevOps-Projects/MTG_Card_Organizer/**
+
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag tanchwa/mtg_card_organizer:latest
+    - name: Push the Docker image
+      run: docker logun -u tanchwa -p ${{ secrets.DOCKER_TOKEN }} && docker push tanchwa/mtg_card_prganizer:latest
