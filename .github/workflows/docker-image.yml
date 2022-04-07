@@ -3,9 +3,9 @@ name: Docker Image CI
 on:
   push:
     branches:
-    - main
+      - main
     paths:
-    - DevOps-Projects/MTG_Card_Organizer
+      - DevOps-Projects/MTG_Card_Organizer
 
 
 jobs:
