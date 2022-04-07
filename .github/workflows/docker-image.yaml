@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - Tanchwa/DevOps-Projects/MTG_Card_Organizer/**
+      - ./MTG_Card_Organizer/**
   workflow_dispatch:
   
 jobs:
@@ -16,9 +16,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Debug
-      run: pwd
     - name: Build the Docker image
-      run: docker build --file Dockerfile --tag tanchwa/mtg_card_organizer:latest
+      run: docker build ./MTG_Card_Organizer --file Dockerfile --tag tanchwa/mtg_card_organizer:latest
     - name: Push the Docker image
       run: docker logun -u tanchwa -p ${{ secrets.DOCKER_TOKEN }} && docker push tanchwa/mtg_card_prganizer:latest
