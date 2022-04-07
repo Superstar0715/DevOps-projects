@@ -16,8 +16,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: change working directory
-      run: cd ./DevOps-Projects/MTG_Card_Organizer/
+    - name: Debug
+      run: pwd
     - name: Build the Docker image
       run: docker build --file Dockerfile --tag tanchwa/mtg_card_organizer:latest
     - name: Push the Docker image
