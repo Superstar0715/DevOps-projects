@@ -71,8 +71,9 @@ if __name__ == "__main__":
     multiverse_ids = [1135, 1, 2303, 74324, 525598, 10422]
     for multiverse_id in multiverse_ids:
         test_script(multiverse_id)
+    print("testing done")
 
-
+    
     while input != exit:
         input = input("Hi, Ethan! Try Me! Enter a card and set number to see its price!\n(formated in card_name, set_name):\nEnter 'Exit' to quit\n>")
         card_name, set_name = input.split(", ")
