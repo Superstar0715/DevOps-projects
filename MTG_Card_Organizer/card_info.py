@@ -73,10 +73,10 @@ if __name__ == "__main__":
         test_script(multiverse_id)
 
 
-    input = ""
-    while input != "exit":
-        input = input("Hi, Ethan! Try Me! Enter a card and set number to see its price!\n(formated in card_name, set_name):\nEnter 'Exit' to quit\n>")
-        card_name, set_name = input.split(", ")
+
+    while user_input != "exit":
+        user_input = input("Hi, Ethan! Try Me! Enter a card and set number to see its price!\n(formated in card_name, set_name):\nEnter 'Exit' to quit\n>")
+        card_name, set_name = user_input.split(", ")
         card_price = card_price_lookup(card_name, set_name)
         print(f"Your Card {card_name} from {set_name} is {card_price}")
 
