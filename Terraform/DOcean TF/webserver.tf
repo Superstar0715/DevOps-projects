@@ -1,5 +1,5 @@
 data "template_file" "cloud-init" {
-    template = file("${path.module}/Terraform/DOceon\ TF/cloud-init.yaml") #this will need to be changed to where the yaml is
+    template = file("${path.module}/cloud-init.yaml") #reminder to change this to make sure its exactly where the yaml
     vars = {
         init_ssh_public_key = file(var.pub_key)
     }

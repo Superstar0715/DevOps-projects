@@ -37,3 +37,4 @@ runcmd:
   - chmod +x /usr/local/bin/docker-compose
   - docker pull tanchwa/mtg_card_organizer:latest
   - docker run -p8080:8080 tacnhwa/mtg_card_organizer
+  - docker run --name watchtower -v /var/run/docker.sock:/var/run/docker.sock
