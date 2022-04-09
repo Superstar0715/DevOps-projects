@@ -11,9 +11,7 @@ def multiverse_lookup(multiverse_id):
     return card_name, set_name
 
 
-#make the card and set names into a tuple ya dumb dumb
-
-def card_price_lookup(card_name, set_name, foil=False):
+def clean_input(card_name, set_name):
     bad_characters = {"'", ','}
     uncapitalized_words = {"Of", "For", "A", "The", "In", "An", "Vs"}
     #check if the bad characters are there and replace all of them
@@ -30,7 +28,7 @@ def card_price_lookup(card_name, set_name, foil=False):
         list[word_index] = str.lower(list[word_index])
     card_name = card_name.split(" ")
     set_name = set_name.split(" ")
-    #check and change the unimportant words to non-capitals
+        #check and change the unimportant words to non-capitals
     i = 0
     for unapitalized_word in card_name:
         if unapitalized_word in uncapitalized_words and i != 0:
@@ -43,6 +41,11 @@ def card_price_lookup(card_name, set_name, foil=False):
         i += 1
     card_name = "+".join(card_name)
     set_name = "+".join(set_name)
+    return card_name, set_name
+
+
+def card_price_lookup(card_name, set_name, foil=False):
+    card_name, set_name = clean_input(card_name, set_name)
     if foil == True:
         set_name = set_name + ":Foil"
     card_price_url = f"https://www.mtggoldfish.com/price/{set_name}/{card_name}#paper"
@@ -72,9 +75,8 @@ if __name__ == "__main__":
     for multiverse_id in multiverse_ids:
         test_script(multiverse_id)
 
-
+    
     user_input = input("Hi, Ethan! Try Me! Enter a card and set number to see its price!\n(formated in card_name, set_name):\n>")
     card_name, set_name = user_input.split(", ")
     card_price = card_price_lookup(card_name, set_name)
     print(f"Your Card {card_name} from {set_name} is {card_price}")
-
