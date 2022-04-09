@@ -159,7 +159,7 @@ services:
         - TZ=${TZ}
         - UMASK=022
       volumes:
-        - /srv/Configs/Prometheus/prometheus.yaml:/etc/prometheus/prometheus.yaml
+        - /srv/Configs/Prometheus/:/etc/prometheus/
       ports:
         - 9292:9090
       restart: unless-stopped
@@ -167,6 +167,8 @@ services:
   node-exporter:
       image: quay.io/prometheus/node-exporter:latest
       container_name: node-exporter
+      command:
+        - '--path.rootfs=/host'
       network_mode: host
       environment:
         - PUID=${PUID}
@@ -174,9 +176,19 @@ services:
         - TZ=${TZ}
       volumes:
         - /:/host:ro,rslave
-      ports:
-        - 9100:9090
       restart: unless-stopped
+
+  cadvisor:
+    image: google/cadvisor:latest
+    container_name: cadvisor
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    devices:
+      - /dev/kmsg
     
   grafana:
     image: grafana/grafana
