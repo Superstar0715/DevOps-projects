@@ -103,27 +103,12 @@
       rule: allow
       name: OpenSSH
       src: 198.168.1.35
-  - name: open ports to incomming requests on trusted devices vlan
+  - name: open port 443
     ufw:
       rule: allow
       direction: in
-      src: 192.168.1.0/24
-      port: 3000:9117
+      port: 443
       proto: tcp
-  - name: temporary allow out while I don't have access to a vlan and proxy server
-    ufw: 
-      rule: allow
-      direction: in
-      dest: 192.168.1.0/24
-      port: 3000:9117
-      proto: udp
-  - name: udp for emby 
-    ufw: 
-      rule: allow
-      direction: in
-      dest: 192.168.1.0/24
-      port: 90
-
 
 
 
