@@ -77,7 +77,7 @@ if __name__ == "__main__":
 
     user_input = ""
     while user_input != exit:
-        user_input = input("Hi, Abdou! Try Me! Enter a card and set number to see its price!\n(formated in card_name, set_name):\nType 'exit' to exit\n>")
+        user_input = input("Hi, Michael! Try Me! Enter a card and set number to see its price!\n(formated in card_name, set_name):\nType 'exit' to exit\n>")
         card_name, set_name = user_input.split(", ")
         card_price = card_price_lookup(card_name, set_name)
         print(f"Your Card {card_name} from {set_name} is {card_price}\nEnter another card, or type 'exit' to exit")
