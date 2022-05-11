@@ -15,6 +15,7 @@ def clean_input(card_name, set_name):
     bad_characters = {"'", ','}
     uncapitalized_words = {"Of", "For", "A", "The", "In", "An", "Vs"}
     #check if the bad characters are there and replace all of them
+    #thomas said that this doesn't need an if statement, also could just use regex
     for bad_character in card_name:
         if bad_character in bad_characters:
             card_name = card_name.replace(bad_character,"")
@@ -35,7 +36,7 @@ def clean_input(card_name, set_name):
             make_element_lowercase(card_name, unapitalized_word)
         i += 1
     i = 0
-    for unapitalized_word in set_name:
+    for uncapitalized_word in set_name:
         if unapitalized_word in uncapitalized_words and i != 0:
             make_element_lowercase(set_name, unapitalized_word)
         i += 1
@@ -76,8 +77,8 @@ if __name__ == "__main__":
         test_script(multiverse_id)
 
     user_input = ""
-    while user_input != exit:
-        user_input = input("Hi, Michael! Try Me! Enter a card and set number to see its price!\n(formated in card_name, set_name):\nType 'exit' to exit\n>")
+    while user_input != "exit":
+        user_input = input("Hi, Thomas! Try Me! Enter a card and set number to see its price!\n(formated in card_name, set_name):\nType 'exit' to exit\n>")
         card_name, set_name = user_input.split(", ")
         card_price = card_price_lookup(card_name, set_name)
         print(f"Your Card {card_name} from {set_name} is {card_price}\nEnter another card, or type 'exit' to exit")
