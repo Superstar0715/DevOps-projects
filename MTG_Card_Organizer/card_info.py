@@ -83,5 +83,7 @@ if __name__ == "__main__":
             card_name, set_name = user_input.split(", ")
             card_price = card_price_lookup(card_name, set_name)
             print(f"Your Card {card_name} from {set_name} is {card_price}\nEnter another card, or type 'exit' to exit")
-        else:
+        elif:
             print("Please Enter a card name AND set name, or type exit to exit")
+        else:
+            quit()
