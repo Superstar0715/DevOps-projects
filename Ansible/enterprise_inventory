@@ -15,10 +15,10 @@ ansible_user=root
 ansible_password=P@ssword123
 
 [Edge_Routers_Chicago]
-0.0.0.0 ##Router 1 Chicago##
+Chicago_Gateway ansible_host=0.0.0.0
 
 [Edge_Routers_St_Louis]
-0.0.0.0 ##Router 1 St. Louis##
+St_Louis_Gateway ansible_host=0.0.0.0
 
 [Distribution_Routers_Chicago]
 0.0.0.0

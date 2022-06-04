@@ -15,14 +15,20 @@ I had three goals for the second project.
     3. Push out a change to the infrustructure using Ansible
 
 ## Methodology for Project 2
-I used my knowledge from the CompTIA Network+ certification to put in what I think would make an effective network. When designing this network, the picture I had in my head for this business is a business analytics company with a few different teams, one large office in Chicago, and a smaller remote office in St. Louis. The company would have a large database on site, a webserver with two hosts and a reverse proxy for their web page but no client facing web app, a number of hosts managed with LDAP, and a certificating Kerberos server for PowerBI, Microsoft Office, and Adobe Licenses. I also included a Next Gen Firewall, used HSRP on the distribution layer routers, and manually configured the routing tables.
+I used my knowledge from the CompTIA Network+ certification to put in what I think would make an effective network. When designing this network, the picture I had in my head for this business is a business analytics company with a few different teams, one large office in Chicago, and a smaller remote office in St. Louis. The company would have a large database on site, a webserver with two hosts and a reverse proxy for their web page but no client facing web app, a number of hosts managed with LDAP, and a certificating Kerberos server for PowerBI, Microsoft Office, and Adobe Licenses. I also included a Next Gen Firewall, used HSRP on the distribution layer routers, and manually configured the routing tables. 
+The change: the company is expanding its IT department handling the webserver. There are now going to be a few individual nodes in St. Louis that need access to the DMZ. 
+
+## Requirements
+clone the Tanchwa/DevOps-Projects repository
+ansible installed on the machine you're working from
+have the ansible galaxy cisco modules installed from ansible
 
 
 ## To Do 
     * Rough outline of logical topology  
     * Finish the inventory outline with LDAP support  
     * Finish basline playbook  
-    * Come up with an idea for the network change and update the README to include this  
+    * ~~Come up with an idea for the network change and update the README to include this~~  
     * Set up a virtual network and test out the baseline  
     * Run a change playbook  
 

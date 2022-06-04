@@ -1,6 +1,9 @@
 ---
 
 - name: Distribution Router Setup
+  gather_facts: false
+  connection: local
+  tasks:
   - name: Enable HSRP with the following params on distribution routers in Chicago
     hosts: Distribution_Routers_Chicago
     cisco.nxos.nxos_hsrp:
@@ -21,10 +24,34 @@
       preempt: enabled
       auth_type: md5
       auth_string: 7 1234
-  - name: populate the routing table for 
-  - name: populate routing table
+  - name: populate the routing table for Chicago
+    hosts: Distribution_Routers_Chicago
+    nxos_static_route:
+      prefix: "192.168.20.64/24"
+      next_hop: "192.0.2.3"
+      route_name: testing
+      pref: 100
+  - name: populate routing table for St. Louis
+    hosts: Distribution_Routers_St_Louis
+    nxos_static_route:
+      prefix: "192.168.20.64/24"
+      next_hop: "192.0.2.3"
+      route_name: testing
+      pref: 100
   - name: Next Gen Firewall config 
     hosts: Distribution_Routers_Chicago:Distribution_Routers_St_Louis
+    #this will just use the config module 
+    https://docs.ansible.com/ansible/2.9/modules/nxos_config_module.html#nxos-config-module
+    https://www.networkstraining.com/how-to-configure-cisco-router-with-ios-firewall-functionality-%E2%80%93-cbac/
+    # the config module can also run backups 
+    
+  - name: 
+
+##after each play is done, back up a snapshot 
+
+
+
+
 
 
 
