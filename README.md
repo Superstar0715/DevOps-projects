@@ -9,7 +9,7 @@
  Next Git based goal: Start using test branches to test new code changes. Until now, I had been writing in VS code and testing things in my local machine before pushing them to main.
  * ~~Start checking out new branches~~
  * Create a new GitHub Actions workflow for the Python app, and push it to DockerHub with the tag "test"
- * Create a test environment that automatically pulls this repository (tentative for cloud-based projects, money dependent)
+ * Create a test environment that automatically pulls this repository (tentative for cloud-based projects, money dependent)  
  New Ansible Project: Use ansible to deploy and do a mock update to an analogous business network/ production environment.
  * Design a network infrastructure for a small business
  * Learn how to use ansible to update things other than hosts, i.e., routing tables, MAC tables, split horizon and STP, firewalls, etc.
