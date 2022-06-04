@@ -1,32 +1,51 @@
 ---
+- name: General Config for routers and switches
+  gather_facts: false
+  hosts: Routers:Switches
+  tasks:
+  - name: Add Banner
+    ios_banner:
+    text: 
+      May I remind you, 007, you have a license to kill
+      not disobey (network) trafic laws. 
+    state: present
 
 - name: Distribution Router Setup
   gather_facts: false
-  connection: local
   tasks:
-  - name: Enable HSRP with the following params on distribution routers in Chicago
+  - name: Enable HSRP on router 1, IP 172.28.128.100
     hosts: Distribution_Routers_Chicago
-    cisco.nxos.nxos_hsrp:
-      group: 
-      vip: 
-      priority: 
-      interface: 
-      preempt: enabled
-      auth_type: md5
-      auth_string: 7 1234
+    ios_config:
+      lines:
+        - standby 1 ip 172.28.128.100 #group is 1
+        - standby priority 100
+        - standby 1 preempt
+      parents: interface FastEthernet0/0
+    when: inventory_hostname=='NAME OF ROUTER 1'
+  - name: Enable HSRP on router 2, IP 172.28.128.100 
+    hosts: Distribution_Routers_Chicago
+    ios_config:
+      lines:
+        - standby 1 ip 172.28.128.100 #group is 1
+        #standby priority is gone here, defining who is the master
+        - standby 1 preempt
+      parents: interface FastEthernet0/0
+    when: inventory_hostname=='NAME OF ROUTER 1' 
+## There is a pre-built module for NX-OS switches, lets assume that the St. Louis
+##Location is new and they wound up getting some newer equipment. It also lets us configure both switches at once
   - name: Enable HSRP with the following params on distribution routers in St. Louis
     hosts: Distribution_Routers_St_Louis
     cisco.nxos.nxos_hsrp:
-      group: 
+      group: 2
       vip: 
-      priority: 
-      interface: 
+      priority: 100
+      interface: FastEthernet0/0
       preempt: enabled
       auth_type: md5
       auth_string: 7 1234
   - name: populate the routing table for Chicago
     hosts: Distribution_Routers_Chicago
-    nxos_static_route:
+    ios_static_route:
       prefix: "192.168.20.64/24"
       next_hop: "192.0.2.3"
       route_name: testing
@@ -45,16 +64,35 @@
     https://www.networkstraining.com/how-to-configure-cisco-router-with-ios-firewall-functionality-%E2%80%93-cbac/
     # the config module can also run backups 
     
-  - name: 
-
+  - name: backup for distrobution routers 
 ##after each play is done, back up a snapshot 
+- name: Edge Router Setup
 
 
+- name: Switch Setup
 
 
-
-
-
-
-
-- name: Webserver setup
+- name: Webserver Setup
+  tasks: 
+  - name: Instal Apps to Servers
+    hosts: Webservers
+    apt:
+      name: nginx
+      update_cache: yes
+  - name: Setup Directory for HTML Files
+    file:
+      path: /var/www
+      state: directory
+  - name: Load Nginx Conf Files
+    copy: 
+      src: ./NAME OF WEBSITE.conf
+      dest: /etc/nginx/sites-available/
+  - name: Load Balancer Setup
+    hosts: Load_Balancer
+    apt:
+      name: nginx
+      update_cache: yes
+  - name: Load Nginx Load Balancer Conf Files
+    copy: 
+      src: ./LOAD BALANCER CONF
+      dest: /etc/nginx/conf.d/LOAD BALANCER CONF
