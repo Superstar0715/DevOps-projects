@@ -1,0 +1,33 @@
+---
+
+- name: Distribution Router Setup
+  - name: Enable HSRP with the following params on distribution routers in Chicago
+    hosts: Distribution_Routers_Chicago
+    cisco.nxos.nxos_hsrp:
+      group: 
+      vip: 
+      priority: 
+      interface: 
+      preempt: enabled
+      auth_type: md5
+      auth_string: 7 1234
+  - name: Enable HSRP with the following params on distribution routers in St. Louis
+    hosts: Distribution_Routers_St_Louis
+    cisco.nxos.nxos_hsrp:
+      group: 
+      vip: 
+      priority: 
+      interface: 
+      preempt: enabled
+      auth_type: md5
+      auth_string: 7 1234
+  - name: populate the routing table for 
+  - name: populate routing table
+  - name: Next Gen Firewall config 
+    hosts: Distribution_Routers_Chicago:Distribution_Routers_St_Louis
+
+
+
+
+
+- name: Webserver setup
