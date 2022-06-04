@@ -2,6 +2,8 @@
 
 ## Overview
  The goal of this repository is to give me the hands-on experience with popular DevOps tools, while using Git to deploy them. I've used some of these technologies to accomplish personal goals, such as deploying a web app or creating a home media server and created some projects more like what one might find in a business production environment, such as setting up a Kubernetes cluster, tech stack, or network. If it exists in the tech world, I will find a way to automate and deploy it from the comfort of my house. 
+
+（[本説明文件有中文版本](https://github.com/Tanchwa/DevOps-Projects/blob/main/README.zh-tw.md))
  
  ## Next Up
  * ~~Write a better README~~
