@@ -1,7 +1,7 @@
 # Terraform 
 ## Overview
 Here is a simple Terraform script to reate a single Digital Ocean droplet. I've also included a Cloud-Init file to automatically set up the cloud instance with an installation of Docker, and to pull my Python application image.
-This also pulls any new versions of the image with an app called "watchtwoer." This is also set up automatically on the cloud image with Cloud-Init. 
+This also pulls any new versions of the image with an app called "Watchtower." This is also set up automatically on the cloud image with Cloud-Init. 
 
 # Requirements
 Install Terraform on your workstation, clone this repository.
