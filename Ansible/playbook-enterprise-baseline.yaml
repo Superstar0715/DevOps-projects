@@ -89,8 +89,10 @@
       state: active
       shutdown: enabled
     state: merged
-#MTU can also be set up in this 
-  - name: Trunk Port Setup
+## MTU can also be set up in this 
+## To Do: learn what shutdown is here
+  - name: Configure Specefic Ports for VLANs
+
 
 
 
