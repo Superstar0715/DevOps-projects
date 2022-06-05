@@ -31,8 +31,8 @@
         - standby 1 preempt
       parents: interface FastEthernet0/0
     when: inventory_hostname=='NAME OF ROUTER 1' 
-## There is a pre-built module for NX-OS switches, lets assume that the St. Louis
-##Location is new and they wound up getting some newer equipment. It also lets us configure both switches at once
+## There is a pre-built module for NX-OS switches, lets assume that the data center
+## is located in St. Louis and they need higher thruput
   - name: Enable HSRP with the following params on distribution routers in St. Louis
     hosts: Distribution_Routers_St_Louis
     cisco.nxos.nxos_hsrp:
@@ -70,6 +70,28 @@
 
 
 - name: Switch Setup
+  tasks:
+  - name: Vlan Setup
+    hosts: Switches
+    cisco.ios.ios_vlans:
+    config:
+    - name: IT
+      vlan_id: 10
+      state: active
+      shutdown: disabled
+      remote_span: true
+    - name: Business
+      vlan_id: 20
+      state: active
+      shutdown: enabled
+    - name: Sales
+      vlan_id: 30
+      state: active
+      shutdown: enabled
+    state: merged
+#MTU can also be set up in this 
+  - name: Trunk Port Setup
+
 
 
 - name: Webserver Setup
