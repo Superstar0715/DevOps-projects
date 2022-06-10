@@ -10,6 +10,7 @@
       not disobey (network) trafic laws. 
     state: present
 
+
 - name: Distribution Router Setup
   gather_facts: false
   tasks:
@@ -31,6 +32,7 @@
         - standby 1 preempt
       parents: interface FastEthernet0/0
     when: inventory_hostname=='NAME OF ROUTER 1' 
+##for preempt delay time, cisco recomends (boot time)/2 
 ## There is a pre-built module for NX-OS switches, lets assume that the data center
 ## is located in St. Louis and they need higher thruput
   - name: Enable HSRP with the following params on distribution routers in St. Louis
@@ -62,17 +64,26 @@
     #this will just use the config module 
     https://docs.ansible.com/ansible/2.9/modules/nxos_config_module.html#nxos-config-module
     https://www.networkstraining.com/how-to-configure-cisco-router-with-ios-firewall-functionality-%E2%80%93-cbac/
+    https://fchaudhr.github.io/LTRDCN_1572/task1-ansible-node/
     # the config module can also run backups 
     
   - name: backup for distrobution routers 
 ##after each play is done, back up a snapshot 
-- name: Edge Router Setup
+ 
 
+- name: Edge/ Core Router Setup
+  tasks: 
+    - name: Configure Site to Site IPSEC Tunel (ISAKMP Phase 1)
+    - name: Configure Site to Site IPSEC Tunel (ISAKMP Phase 2)
+    https://www.firewall.cx/cisco-technical-knowledgebase/cisco-routers/867-cisco-router-site-to-site-ipsec-vpn.html
+        #create ACL, IPSec Transform, Crypto Map, apply crypto mapto the right port
+        #the only thing that needs to be different is the peer address, can set this up with logic
+    - name: 
 
-- name: Switch Setup
+- name: VLAN Setup
   tasks:
-  - name: Vlan Setup
-    hosts: Switches
+  - name: VLAN Setup
+    hosts: Switches:Distribution_Routers_Chicago:Distribution_Routers_St_Louis
     cisco.ios.ios_vlans:
     config:
     - name: IT
@@ -91,10 +102,10 @@
     state: merged
 ## MTU can also be set up in this 
 ## To Do: learn what shutdown is here
-  - name: Configure Specefic Ports for VLANs
+## Learn what remote span is
+  - name: Configure Ports for VLANs
 
-
-
+#run ping and log results for baseline
 
 - name: Webserver Setup
   tasks: 
@@ -109,8 +120,11 @@
       state: directory
   - name: Load Nginx Conf Files
     copy: 
-      src: ./NAME OF WEBSITE.conf
+      src: ./AwesomeBusiness.com.conf
       dest: /etc/nginx/sites-available/
+  - name: Sim Link Sites Available to Sites enabled
+    ansible.builtin.command:
+      command: ln /etc/nginx/sites-available/AwesomeBusiness.com.conf /etc/nginx/sites-enabled/AwesomeBusiness.com.conf
   - name: Load Balancer Setup
     hosts: Load_Balancer
     apt:
@@ -120,3 +134,5 @@
     copy: 
       src: ./LOAD BALANCER CONF
       dest: /etc/nginx/conf.d/LOAD BALANCER CONF
+
+    
