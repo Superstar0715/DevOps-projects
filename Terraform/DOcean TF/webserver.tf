@@ -1,5 +1,5 @@
 data "template_file" "cloud-init" {
-    template = file("./cloud-init.yaml") #reminder to change this to make sure its exactly where the yaml
+    template = file("./cloud-init.yaml")
     vars = {
         init_ssh_public_key = file(var.pub_key)
     }
