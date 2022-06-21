@@ -15,6 +15,7 @@ resource "aws_vpc" "main" {
 
 
 #buckets#
+#these ACLS should be changed using resource: aws_s3_bucket_public_access_block
 resource "aws_s3_bucket" "preprocessing" {
     bucket  = "video-preprocessing-bucket"
     tags    = {
@@ -22,7 +23,7 @@ resource "aws_s3_bucket" "preprocessing" {
     }
 }
 resource "aws_s3_bucket_acl" "preprocessing_acl" {
-  bucket = aws_s3_bucket.preprocessing.id
+  bucket = aws_s3_bucket.preprocessing.bucket
   acl    = "private"
 }
 resource "aws_s3_bucket" "postprocessing" {
@@ -32,17 +33,27 @@ resource "aws_s3_bucket" "postprocessing" {
     }
 }
 resource "aws_s3_bucket_acl" "postprocessing_acl" {
-  bucket = aws_s3_bucket.postprocessing.id
+  bucket = aws_s3_bucket.postprocessing.bucket
   acl    = "private"
 }
-resource "aws_s3_bucket_website_configuration" "webpage" {
-    bucket = "AndrewTube.com"
+resource "aws_s3_bucket" "webpage" {
+    bucket = "andrewtube"
+    tags    = {
+        Name = "andrewtube-bucket"
+    }
+}
+resource "aws_s3_bucket_website_configuration" "webpage_config" {
+    bucket = aws_s3_bucket.webpage.bucket
     index_document {
         suffix = "index.html"
     }
     error_document {
         key = "error.html"
     }
+}
+resource "aws_s3_bucket_acl" "webpage_acl" {
+  bucket = aws_s3_bucket.webpage.bucket
+  acl    = "private"
 }
 
 
@@ -51,18 +62,18 @@ resource "aws_security_group" "webtrafic_sg" {
     name        = "allow_inbound_webtrafic_sg"
     description = "Allow inbound web trafic"
     ingress {
-        description      = "HTTPS"
-        from_port        = 443
-        to_port          = 443
-        protocol         = "tcp"
+        description = "HTTPS"
+        from_port   = 443
+        to_port     = 443
+        protocol    = "tcp"
     }
     ingress {
-        description      = "HTTP"
-        from_port        = 80
-        to_port          = 80
-        protocol         = "tcp"
+        description = "HTTP"
+        from_port   = 80
+        to_port     = 80
+        protocol    = "tcp"
     }
-    tags    = {
+    tags        = {
         Name = "allow_inbound_webtrafic_sg"
     }
 }
@@ -70,7 +81,7 @@ resource "aws_security_group" "webtrafic_sg" {
 
 
 
-#lambda functions
+/* lambda functions
 resource "aws_lambda_function" "video_search" {
     filename        = "LAMBDAPAYLOAD.zip"
     function_name   = "Video Search"
@@ -83,6 +94,8 @@ resource "aws_lambda_function" "video_encoder" {
     role            = aws_iam_role.iam_for_search.arn
     runtime         = "python3.9"
 }
-
+*/
 #cloudfront distribution
-
+#further reading 
+#https://aws.amazon.com/blogs/networking-and-content-delivery/serving-compressed-webgl-websites-using-amazon-cloudfront-amazon-s3-and-aws-lambda/
+#https://www.youtube.com/watch?v=mls8tiiI3uc

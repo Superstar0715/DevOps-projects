@@ -1,3 +1,5 @@
 .vscode
 Docker Media Server/.env
 Kubernetes-Projects/Mongo DB Starter/mongo-secret.yaml
+Terraform/AWS TF/.terraform
+Terraform/AWS TF/.terraform.lock.hcl
