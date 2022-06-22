@@ -1,0 +1,18 @@
+---
+- hosts: all
+  gather_facts: no
+  become: yes
+  tasks:
+    - name: Find Logs
+      find:
+        paths: /var/log/
+        patterns: '*.log'
+        age: -1d
+        recurse: yes
+      register: _logs
+
+    - name: Fetch Logs
+      fetch:
+        src: "{{ item.path}}"
+        dest: /tmp/logs
+      with_items: "{{ _logs.files }}"
