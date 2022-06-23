@@ -7,8 +7,7 @@ Scaling up the difficulty, I decided I wanted to try to provision an entire ente
 The inspiration for this architecture was a video from Cloud With Raj https://www.youtube.com/watch?v=7hZXBrI2TjY&t=458s. I am still researching some of the components of this architecture, as provisioning aws lambda functions and a content distribution have been especially difficult to provision automatically.
 
 ### To Do List for the Video Hosting Service Project
-* research networking, access points for lambda and s3, lamda and dynamodb:  
-  there are many different options for these (IAM, access points, step functions), and I'm not sure which is the best option yet
+* research networking, access points for lambda and s3, lamda and dynamodb: there are many different options for these (IAM, access points, step functions), and I'm not sure which is the best option yet
 * learn more about HTML in order to understand the caching behavior for a CDN 
 
 For the other project, I made a webapp architecture that autoscales accross three availability zones. 
