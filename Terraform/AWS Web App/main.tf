@@ -154,9 +154,10 @@ resource "aws_launch_template" "webserver_template" {
 
   network_interfaces {
     associate_public_ip_address = true
+    security_groups             = [ aws_security_group.webtrafic_sg.id ]
   }
 
-  vpc_security_group_ids = [ aws_security_group.webtrafic_sg.id ]
+  #vpc_security_group_ids = [ aws_security_group.webtrafic_sg.id ]
 
   lifecycle {
     create_before_destroy = true
