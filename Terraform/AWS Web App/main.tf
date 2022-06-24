@@ -16,7 +16,6 @@ resource "aws_vpc" "main_vpc" {
 }
 
 
-
 #internet gateway
 resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.main_vpc.id
@@ -32,11 +31,6 @@ resource "aws_route_table" "route_table" {
   route {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.gw.id
-  }
-
-  route {
-    ipv6_cidr_block        = "::/0"
-    egress_only_gateway_id = aws_internet_gateway.gw.id
   }
 
   tags = {
@@ -164,6 +158,9 @@ resource "aws_launch_template" "webserver_template" {
 
   vpc_security_group_ids = [ aws_security_group.webtrafic_sg.id ]
 
+  lifecycle {
+    create_before_destroy = true
+  }
   tag_specifications {
     resource_type = "instance"
 
@@ -246,31 +243,6 @@ resource "aws_autoscaling_group" "web_asg" {
     propagate_at_launch = true
   }
 }
-
-
-output "elb_dns_name" {
-  value = aws_elb.web_balancer.dns_name
-}
-
-
-│/*  Error: error creating Route in Route Table (rtb-04942819cea871b3c) with destination (::/0): InvalidEgressOnlyInternetGatewayId.Malformed: Invalid id: "igw-0ef4df38daea5a4fb" (expecting "eigw-...")
-│       status code: 400, request id: 082ce40b-27bc-4d19-8d11-05ff49da2ba4
-│ 
-│   with aws_route_table.route_table,
-│   on main.tf line 29, in resource "aws_route_table" "route_table":
-│   29: resource "aws_route_table" "route_table" {
-│ 
-╵
-╷
-│ Error: creating Auto Scaling Group (webserver-template-asg): InvalidQueryParameter: Invalid launch template: When a network interface is provided, the security groups must be a part of it.
-│       status code: 400, request id: 95c0eaa0-f445-4f81-827b-e52ed52dc92b
-│ 
-│   with aws_autoscaling_group.web_asg,
-│   on main.tf line 208, in resource "aws_autoscaling_group" "web_asg":
-│  208: resource "aws_autoscaling_group" "web_asg" {
-│  */
-
-
 
 
 
