@@ -3,3 +3,5 @@ Docker Media Server/.env
 Kubernetes-Projects/Mongo DB Starter/mongo-secret.yaml
 Terraform/AWS Video Hosting/.terraform
 Terraform/AWS Video Hosting/.terraform.lock.hcl
+Terraform/AWS Web App/.terraform
+Terraform/AWS Web App/.terraform.lock.hcl

@@ -4,21 +4,25 @@ provider "aws" {
     secret_key  = "${var.secret_key}"
 }
 
-#architecture here we need 
-#webfront and s3 bucket
-#one subnet for each of our instances
-https://hands-on.cloud/terraform-managing-aws-vpc-creating-public-subnet/
-https://hands-on.cloud/terraform-managing-aws-vpc-creating-private-subnets/
-#vpc internet gateway
-#routing table
-#routing table association
-#security group for allowing HTTPS
+#https://hands-on.cloud/terraform-managing-aws-vpc-creating-public-subnet/
+#https://hands-on.cloud/terraform-managing-aws-vpc-creating-private-subnets/
+
 
 resource "aws_vpc" "main_vpc" {
   cidr_block    = "10.0.0.0/16"
   tags          = {
     Name = "production-vpc"
   }
+}
+
+
+
+#internet gateway
+resource "aws_internet_gateway" "gw" {
+  vpc_id = aws_vpc.main_vpc.id
+  tags = {
+    Name = "internet-gw"
+  } 
 }
 
 
@@ -88,17 +92,8 @@ resource "aws_route_table_association" "c" {
 }
 
 
-#internet gateway
-resource "aws_internet_gateway" "gw" {
-  vpc_id = aws_vpc.main_vpc.id
-  tags = {
-    Name = "internet-gw"
-  } 
-}
-
-
 resource "aws_security_group" "webtrafic_sg" {
-    name        = "allow_webtrafic_sg"
+    name        = "allow-webtrafic-sg"
     description = "Allow inbound web trafic"
     vpc_id      = aws_vpc.main_vpc.id
     ingress {
@@ -106,7 +101,7 @@ resource "aws_security_group" "webtrafic_sg" {
         from_port   = 443
         to_port     = 443
         protocol    = "tcp"
-        cidr_block  = ["0.0.0.0/0"]
+        cidr_blocks  = ["0.0.0.0/0"]
         ipv6_cidr_blocks = ["::/0"]
     }
     ingress {
@@ -114,7 +109,7 @@ resource "aws_security_group" "webtrafic_sg" {
         from_port   = 80
         to_port     = 80
         protocol    = "tcp"
-        cidr_block  = ["0.0.0.0/0"]
+        cidr_blocks  = ["0.0.0.0/0"]
         ipv6_cidr_blocks = ["::/0"]
     }
     ingress {
@@ -122,7 +117,7 @@ resource "aws_security_group" "webtrafic_sg" {
         from_port   = 22
         to_port     = 22
         protocol    = "tcp"
-        cidr_block  = ["0.0.0.0/0"]
+        cidr_blocks  = ["0.0.0.0/0"]
         ipv6_cidr_blocks = ["::/0"]
     }
     egress  {
@@ -133,7 +128,7 @@ resource "aws_security_group" "webtrafic_sg" {
         ipv6_cidr_blocks = ["::/0"]
     }
     tags        = {
-        Name = "allow_inbound_webtrafic_sg"
+        Name = "allow-inbound-webtrafic-sg"
     }
 }
 
@@ -159,10 +154,6 @@ resource "aws_launch_template" "webserver_template" {
 
   instance_type = "t2.micro"
 
-
-#keyname? 
-  key_name = "test"
-
   monitoring {
     enabled = true
   }
@@ -170,12 +161,6 @@ resource "aws_launch_template" "webserver_template" {
   network_interfaces {
     associate_public_ip_address = true
   }
-
-##this needs more research, can do group name
-/*   placement {
-    availability_zone = "us-west-2a"
-  } */
-
 
   vpc_security_group_ids = [ aws_security_group.webtrafic_sg.id ]
 
@@ -187,14 +172,11 @@ resource "aws_launch_template" "webserver_template" {
     }
   }
 
-#can specify a cloud init file here
-  user_data = filebase64("${path.module}/example.sh")
-
 }
 
 
 resource "aws_elb" "web_balancer" {
-  name            = 
+  name            = "webapp-load-balancer"
   security_groups = [ aws_security_group.webtrafic_sg.id ]
   subnets         = [
     aws_subnet.public_us_east_2a.id,
@@ -206,12 +188,13 @@ resource "aws_elb" "web_balancer" {
 
   health_check {
     healthy_threshold = 2
-    unhealthy_threashold = 2
+    unhealthy_threshold = 2
     timeout = 3
     interval = 30
-    target = "HTTP:80/" #may need to change
+    target = "HTTP:80/" 
   }
 
+#listener can also be defined as a separate resource with LB resources
   listener {
     lb_port = 80
     lb_protocol = "http"
@@ -226,20 +209,73 @@ resource "aws_autoscaling_group" "web_asg" {
   name = "${aws_launch_template.webserver_template.name}-asg"
 
   min_size             = 1
-  desired_capacity     = 2
+  desired_capacity     = 3
   max_size             = 4
   
   health_check_type    = "ELB"
   load_balancers = [ aws_elb.web_balancer.id ]
+  
+  launch_template {
+    id           = aws_launch_template.webserver_template.id
+    version      = aws_launch_template.webserver_template.latest_version
+  }
+
+  enabled_metrics = [
+    "GroupMinSize",
+    "GroupMaxSize",
+    "GroupDesiredCapacity",
+    "GroupInServiceInstances",
+    "GroupTotalInstances"
+  ]
+
+  metrics_granularity = "1Minute"
+
+  vpc_zone_identifier  = [
+    aws_subnet.public_us_east_2a.id,
+    aws_subnet.public_us_east_2b.id,
+    aws_subnet.public_us_east_2c.id,
+  ]
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  tag {
+    key                 = "Name"
+    value               = "web"
+    propagate_at_launch = true
+  }
 }
 
 
+output "elb_dns_name" {
+  value = aws_elb.web_balancer.dns_name
+}
+
+
+│/*  Error: error creating Route in Route Table (rtb-04942819cea871b3c) with destination (::/0): InvalidEgressOnlyInternetGatewayId.Malformed: Invalid id: "igw-0ef4df38daea5a4fb" (expecting "eigw-...")
+│       status code: 400, request id: 082ce40b-27bc-4d19-8d11-05ff49da2ba4
+│ 
+│   with aws_route_table.route_table,
+│   on main.tf line 29, in resource "aws_route_table" "route_table":
+│   29: resource "aws_route_table" "route_table" {
+│ 
+╵
+╷
+│ Error: creating Auto Scaling Group (webserver-template-asg): InvalidQueryParameter: Invalid launch template: When a network interface is provided, the security groups must be a part of it.
+│       status code: 400, request id: 95c0eaa0-f445-4f81-827b-e52ed52dc92b
+│ 
+│   with aws_autoscaling_group.web_asg,
+│   on main.tf line 208, in resource "aws_autoscaling_group" "web_asg":
+│  208: resource "aws_autoscaling_group" "web_asg" {
+│  */
 
 
 
 
 
-resource "aws_s3_bucket" "webpage" {
+
+/* resource "aws_s3_bucket" "webpage" {
     bucket = "tanchwa-webpage"
     tags    = {
         Name = "tanchwa-webpage-bucket"
@@ -258,20 +294,13 @@ resource "aws_s3_bucket_acl" "webpage_acl" {
   bucket = aws_s3_bucket.webpage.id
   acl    = "private"
 }
+ */
 
-webfront
-
-
-elestic load balancer
-
-autoscaling group
-resource "aws_launch_template" ""
-
-##can specify load balancer in here
-##make a target group and then  
-
-database with read replica
+#webfront
 
 
-https://hands-on.cloud/terraform-recipe-managing-auto-scaling-groups-and-load-balancers/
-https://www.terraform.io/language/meta-arguments/for_each
+#database with read replica
+
+
+#https://hands-on.cloud/terraform-recipe-managing-auto-scaling-groups-and-load-balancers/
+#https://www.terraform.io/language/meta-arguments/for_each
