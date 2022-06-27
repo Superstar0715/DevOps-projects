@@ -86,46 +86,61 @@ resource "aws_route_table_association" "c" {
 }
 
 
-resource "aws_security_group" "webtrafic_sg" {
-    name        = "allow-webtrafic-sg"
-    description = "Allow inbound web trafic"
+resource "aws_security_group" "elb_webtrafic_sg" {
+    name        = "elb-webtraffic-sg"
+    description = "Allow inbound web trafic to load balancer"
     vpc_id      = aws_vpc.main_vpc.id
     ingress {
         description = "HTTPS trafic from vpc"
-        from_port   = 443
-        to_port     = 443
-        protocol    = "tcp"
-        cidr_blocks  = ["0.0.0.0/0"]
+        from_port        = 443
+        to_port          = 443
+        protocol         = "tcp"
+        cidr_blocks      = ["0.0.0.0/0"]
         ipv6_cidr_blocks = ["::/0"]
     }
     ingress {
         description = "HTTP trafic from vpc"
-        from_port   = 80
-        to_port     = 80
-        protocol    = "tcp"
-        cidr_blocks  = ["0.0.0.0/0"]
+        from_port        = 80
+        to_port          = 80
+        protocol         = "tcp"
+        cidr_blocks      = ["0.0.0.0/0"]
         ipv6_cidr_blocks = ["::/0"]
     }
     ingress {
         description = "allow SSH"
-        from_port   = 22
-        to_port     = 22
-        protocol    = "tcp"
-        cidr_blocks  = ["0.0.0.0/0"]
+        from_port        = 22
+        to_port          = 22
+        protocol         = "tcp"
+        cidr_blocks      = ["0.0.0.0/0"]
         ipv6_cidr_blocks = ["::/0"]
     }
     egress  {
-        from_port   = 0
-        to_port     = 0
-        protocol    = "-1"
+        from_port        = 0
+        to_port          = 0
+        protocol         = "-1"
         cidr_blocks      = ["0.0.0.0/0"]
         ipv6_cidr_blocks = ["::/0"]
     }
     tags        = {
-        Name = "allow-inbound-webtrafic-sg"
+        Name = "elb-webtraffic-sg"
     }
 }
 
+resource "aws_security_group" "elb_to_instance_sg" {
+    name        = "elb-to-instance-sg"
+    description = "Allow traffic from load balancer to instances"
+    vpc_id      = aws_vpc.main_vpc.id
+    ingress {
+        description = "all traffic from load balancer"
+        security_groups  = [ aws_security_group.elb_webtrafic_sg.id ]
+        from_port        = 0
+        to_port          = 0
+        protocol         = "-1"
+    }
+    tags        = {
+        Name = "elb-to-instance-sg"
+    }
+}
 
 resource "aws_launch_template" "webserver_template" {
   name = "webserver-template"
@@ -152,9 +167,11 @@ resource "aws_launch_template" "webserver_template" {
     enabled = true
   }
 
+
+##CHANGED SECURITY GROUP HERE TO ALLOW
   network_interfaces {
     associate_public_ip_address = true
-    security_groups             = [ aws_security_group.webtrafic_sg.id ]
+    security_groups             = [ aws_security_group.elb_to_instance_sg.id ]
   }
 
   #vpc_security_group_ids = [ aws_security_group.webtrafic_sg.id ]
@@ -175,7 +192,7 @@ resource "aws_launch_template" "webserver_template" {
 
 resource "aws_elb" "web_balancer" {
   name            = "webapp-load-balancer"
-  security_groups = [ aws_security_group.webtrafic_sg.id ]
+  security_groups = [ aws_security_group.elb_webtrafic_sg.id ]
   subnets         = [
     aws_subnet.public_us_east_2a.id,
     aws_subnet.public_us_east_2b.id,
@@ -192,14 +209,13 @@ resource "aws_elb" "web_balancer" {
     target = "HTTP:80/" 
   }
 
-#listener can also be defined as a separate resource with LB resources
+
   listener {
-    lb_port = 80
-    lb_protocol = "http"
-    instance_port = 80
+    lb_port           = 80
+    lb_protocol       = "http"
+    instance_port     = 80
     instance_protocol = "http"
   }
-
 }
 
 
@@ -246,6 +262,58 @@ resource "aws_autoscaling_group" "web_asg" {
 }
 
 
+resource "aws_autoscaling_policy" "web_scale_up" {
+  name                   = "web-scaling-up-policy"
+  scaling_adjustment     = 1
+  adjustment_type        = "ChangeInCapacity"
+  cooldown               = 300
+  autoscaling_group_name = aws_autoscaling_group.web_asg.name
+}
+
+resource "aws_autoscaling_policy" "web_scale_down" {
+  name = "web_policy_down"
+  scaling_adjustment     = -1
+  adjustment_type        = "ChangeInCapacity"
+  cooldown               = 300
+  autoscaling_group_name = aws_autoscaling_group.web_asg.name
+}
+
+
+resource "aws_cloudwatch_metric_alarm" "web_cpu_alarm_up" {
+  alarm_name             = "web_cpu_alarm_up"
+  comparison_operator    = "GreaterThanOrEqualToThreshold"
+  evaluation_periods     = "2"
+  metric_name            = "CPUUtilization"
+  namespace              = "AWS/EC2"
+  period                 = "120"
+  statistic              = "Average"
+  threshold              = "60"
+
+  dimensions = {
+    AutoScalingGroupName = aws_autoscaling_group.web_asg.name
+  }
+
+  alarm_description = "This metric monitor EC2 instance CPU utilization"
+  alarm_actions = [ aws_autoscaling_policy.web_scale_up.arn ]
+}
+
+resource "aws_cloudwatch_metric_alarm" "web_cpu_alarm_down" {
+  alarm_name             = "web_cpu_alarm_down"
+  comparison_operator    = "LessThanOrEqualToThreshold"
+  evaluation_periods     = "2"
+  metric_name            = "CPUUtilization"
+  namespace              = "AWS/EC2"
+  period                 = "120"
+  statistic              = "Average"
+  threshold              = "10"
+
+  dimensions = {
+    AutoScalingGroupName = aws_autoscaling_group.web_asg.name
+  }
+
+  alarm_description = "This metric monitor EC2 instance CPU utilization"
+  alarm_actions = [ aws_autoscaling_policy.web_scale_down.arn ]
+}
 
 
 /* resource "aws_s3_bucket" "webpage" {
