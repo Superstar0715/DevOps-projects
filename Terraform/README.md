@@ -14,4 +14,7 @@ For the other project, I made a webapp architecture that autoscales accross thre
 This also has a database with a read only instance in a second availability zone for failover reliability. 
 ### To Do List for the Webapp Architecture Project
 * research how to provision read only copies for databases, relate it back to a certain availability zone subnet
-* finish writing the code, eta 6/24
+* ~~finish writing the code, eta 6/24~~
+* fix connectivity issue between load balancer and instances 
+* add cloudwatch auto scaling rules and database and failover
+* add networking inbetween instances and database
