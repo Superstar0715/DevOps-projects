@@ -15,6 +15,10 @@ resource "aws_vpc" "main_vpc" {
   }
 }
 
+resource "aws_key_pair" "aws_key" {
+  key_name = "Tanchwa_pc_aws"
+  public_key = file(var.public_key_path)
+}
 
 #internet gateway
 resource "aws_internet_gateway" "gw" {
@@ -111,14 +115,6 @@ resource "aws_security_group" "elb_webtrafic_sg" {
         protocol         = "tcp"
         cidr_blocks      = ["0.0.0.0/0"]
     }
-    #this will need to be changed after its created to reference the internal instance SG
-    egress  {
-        from_port        = 0
-        to_port          = 0
-        protocol         = "-1"
-        cidr_blocks      = ["0.0.0.0/0"]
-        ipv6_cidr_blocks = ["::/0"]
-    }
     tags        = {
         Name = "elb-webtraffic-sg"
     }
@@ -136,11 +132,11 @@ resource "aws_security_group" "instance_sg" {
         protocol         = "tcp"
     }
     ingress {
-        description = "ssh traffic from load balancer"
-        security_groups  = [ aws_security_group.elb_webtrafic_sg.id ]
+        description = "ssh traffic from anywhere"
         from_port        = 22
         to_port          = 22
         protocol         = "tcp"
+        cidr_blocks      = ["0.0.0.0/0"]
     }
     egress {
         description = "all traffic to load balancer"
@@ -153,6 +149,16 @@ resource "aws_security_group" "instance_sg" {
         Name = "instance-sg"
     }
 }
+
+#this is a workaround for the cyclical security group id call
+resource "aws_security_group_rule" "elb_egress_to_webservers" {
+  from_port                = 80
+  to_port                  = 80
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.instance_sg.id
+  security_group_id        = aws_security_group.elb_webtrafic_sg.id
+}
+
 
 resource "aws_launch_template" "webserver_template" {
   name = "webserver-template"
@@ -174,6 +180,8 @@ resource "aws_launch_template" "webserver_template" {
   image_id = "ami-530d5636"
 
   instance_type = "t2.micro"
+
+  key_name = aws_key_pair.aws_key.id
 
   monitoring {
     enabled = true
@@ -197,6 +205,8 @@ resource "aws_launch_template" "webserver_template" {
       Name = "web-app-instance"
     }
   }
+
+  user_data = filebase64("./nginx.sh")
 
 }
 
