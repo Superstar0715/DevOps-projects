@@ -96,7 +96,6 @@ resource "aws_security_group" "elb_webtrafic_sg" {
         to_port          = 443
         protocol         = "tcp"
         cidr_blocks      = ["0.0.0.0/0"]
-        ipv6_cidr_blocks = ["::/0"]
     }
     ingress {
         description = "HTTP trafic from vpc"
@@ -104,7 +103,6 @@ resource "aws_security_group" "elb_webtrafic_sg" {
         to_port          = 80
         protocol         = "tcp"
         cidr_blocks      = ["0.0.0.0/0"]
-        ipv6_cidr_blocks = ["::/0"]
     }
     ingress {
         description = "allow SSH"
@@ -112,8 +110,8 @@ resource "aws_security_group" "elb_webtrafic_sg" {
         to_port          = 22
         protocol         = "tcp"
         cidr_blocks      = ["0.0.0.0/0"]
-        ipv6_cidr_blocks = ["::/0"]
     }
+    #this will need to be changed after its created to reference the internal instance SG
     egress  {
         from_port        = 0
         to_port          = 0
@@ -126,19 +124,33 @@ resource "aws_security_group" "elb_webtrafic_sg" {
     }
 }
 
-resource "aws_security_group" "elb_to_instance_sg" {
-    name        = "elb-to-instance-sg"
+resource "aws_security_group" "instance_sg" {
+    name        = "instance-sg"
     description = "Allow traffic from load balancer to instances"
     vpc_id      = aws_vpc.main_vpc.id
     ingress {
-        description = "all traffic from load balancer"
+        description = "web traffic from load balancer"
+        security_groups  = [ aws_security_group.elb_webtrafic_sg.id ]
+        from_port        = 80
+        to_port          = 80
+        protocol         = "tcp"
+    }
+    ingress {
+        description = "ssh traffic from load balancer"
+        security_groups  = [ aws_security_group.elb_webtrafic_sg.id ]
+        from_port        = 22
+        to_port          = 22
+        protocol         = "tcp"
+    }
+    egress {
+        description = "all traffic to load balancer"
         security_groups  = [ aws_security_group.elb_webtrafic_sg.id ]
         from_port        = 0
         to_port          = 0
         protocol         = "-1"
     }
     tags        = {
-        Name = "elb-to-instance-sg"
+        Name = "instance-sg"
     }
 }
 
@@ -168,10 +180,9 @@ resource "aws_launch_template" "webserver_template" {
   }
 
 
-##CHANGED SECURITY GROUP HERE TO ALLOW
   network_interfaces {
     associate_public_ip_address = true
-    security_groups             = [ aws_security_group.elb_to_instance_sg.id ]
+    security_groups             = [ aws_security_group.instance_sg.id ]
   }
 
   #vpc_security_group_ids = [ aws_security_group.webtrafic_sg.id ]
@@ -223,7 +234,7 @@ resource "aws_autoscaling_group" "web_asg" {
   name = "${aws_launch_template.webserver_template.name}-asg"
 
   min_size             = 1
-  desired_capacity     = 3
+  desired_capacity     = 2
   max_size             = 4
   
   health_check_type    = "ELB"
@@ -261,6 +272,10 @@ resource "aws_autoscaling_group" "web_asg" {
   }
 }
 
+
+output "elb_dns_name" {
+  value = aws_elb.web_balancer.dns_name
+}
 
 resource "aws_autoscaling_policy" "web_scale_up" {
   name                   = "web-scaling-up-policy"
