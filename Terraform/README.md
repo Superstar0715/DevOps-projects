@@ -1,7 +1,7 @@
-#Terraform
+# Terraform
 
 
-##Overview
+## Overview
 Here are a couple projejcts using Terraform to automatically provision cloud resources. My first project was to provision a single droplet within Digital Ocean. 
 Scaling up the difficulty, I decided I wanted to try to provision an entire enterprise architecture within Terraform. The first of these is a video on demand system, similar to YouTube. 
 The inspiration for this architecture was a video from Cloud With Raj https://www.youtube.com/watch?v=7hZXBrI2TjY&t=458s. I am still researching some of the components of this architecture, as provisioning aws lambda functions and a content distribution have been especially difficult to provision automatically.
