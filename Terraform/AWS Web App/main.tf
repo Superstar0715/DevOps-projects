@@ -4,9 +4,6 @@ provider "aws" {
     secret_key  = "${var.secret_key}"
 }
 
-#https://hands-on.cloud/terraform-managing-aws-vpc-creating-public-subnet/
-#https://hands-on.cloud/terraform-managing-aws-vpc-creating-private-subnets/
-
 
 resource "aws_vpc" "main_vpc" {
   cidr_block    = "10.0.0.0/16"
@@ -154,8 +151,7 @@ resource "aws_security_group" "instance_sg" {
         cidr_blocks      = ["0.0.0.0/0"]
     }
     egress {
-        description = "all traffic to load balancer"
-        #security_groups  = [ aws_security_group.elb_webtrafic_sg.id ]
+        description = "all traffic out"
         from_port        = 0
         to_port          = 0
         protocol         = "-1"
