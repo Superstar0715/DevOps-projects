@@ -114,6 +114,14 @@ resource "aws_security_group" "elb_webtrafic_sg" {
         to_port          = 22
         protocol         = "tcp"
         cidr_blocks      = ["0.0.0.0/0"]
+    #do I need another egress rule here to reach out to the internet? 
+    }
+    egress {
+        description = "all traffic out"
+        from_port        = 0
+        to_port          = 0
+        protocol         = "-1"
+        cidr_blocks      = ["0.0.0.0/0"]
     }
     tags        = {
         Name = "elb-webtraffic-sg"
@@ -132,6 +140,13 @@ resource "aws_security_group" "instance_sg" {
         protocol         = "tcp"
     }
     ingress {
+        description = "web traffic from load balancer"
+        security_groups  = [ aws_security_group.elb_webtrafic_sg.id ]
+        from_port        = 443
+        to_port          = 443
+        protocol         = "tcp"
+    }
+    ingress {
         description = "ssh traffic from anywhere"
         from_port        = 22
         to_port          = 22
@@ -140,10 +155,11 @@ resource "aws_security_group" "instance_sg" {
     }
     egress {
         description = "all traffic to load balancer"
-        security_groups  = [ aws_security_group.elb_webtrafic_sg.id ]
+        #security_groups  = [ aws_security_group.elb_webtrafic_sg.id ]
         from_port        = 0
         to_port          = 0
         protocol         = "-1"
+        cidr_blocks      = ["0.0.0.0/0"]
     }
     tags        = {
         Name = "instance-sg"
@@ -151,14 +167,27 @@ resource "aws_security_group" "instance_sg" {
 }
 
 #this is a workaround for the cyclical security group id call
+#I would like to figure out a way for this to destroy this first
+#it currently takes longer to destroy than to set up
+#terraform hangs because of the dependancy each SG has on each other, 
+#but will eventually struggle down to this rule and delete it, clearing the deadlock
 resource "aws_security_group_rule" "elb_egress_to_webservers" {
+  security_group_id        = aws_security_group.elb_webtrafic_sg.id
+  type                     = "egress"
+  source_security_group_id = aws_security_group.instance_sg.id
   from_port                = 80
   to_port                  = 80
   protocol                 = "tcp"
-  source_security_group_id = aws_security_group.instance_sg.id
-  security_group_id        = aws_security_group.elb_webtrafic_sg.id
 }
 
+resource "aws_security_group_rule" "elb_tls_egress_to_webservers" {
+  security_group_id        = aws_security_group.elb_webtrafic_sg.id
+  type                     = "egress"
+  source_security_group_id = aws_security_group.instance_sg.id
+  from_port                = 443
+  to_port                  = 443
+  protocol                 = "tcp"
+}
 
 resource "aws_launch_template" "webserver_template" {
   name = "webserver-template"
@@ -177,7 +206,8 @@ resource "aws_launch_template" "webserver_template" {
     capacity_reservation_preference = "open"
   }
 
-  image_id = "ami-530d5636"
+  image_id = "ami-02d1e544b84bf7502"
+
 
   instance_type = "t2.micro"
 
@@ -195,7 +225,7 @@ resource "aws_launch_template" "webserver_template" {
 
   #vpc_security_group_ids = [ aws_security_group.webtrafic_sg.id ]
 
-  lifecycle {
+  lifecycle { 
     create_before_destroy = true
   }
   tag_specifications {
@@ -206,7 +236,7 @@ resource "aws_launch_template" "webserver_template" {
     }
   }
 
-  user_data = filebase64("./nginx.sh")
+  user_data = filebase64("nginx.sh")
 
 }
 

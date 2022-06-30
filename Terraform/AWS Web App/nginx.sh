@@ -1,10 +1,10 @@
 #!/bin/bash 
 
-until [[ -f /var/lib/cloud/instance/boot-finished ]]; do
-	sleep 1
-done
+sudo yum update -y
+sudo amazon-linux-extras install -y nginx1
 
-apt update
-apt install nginx -y
 
-service nginx start
+ln /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+
+sudo systemctl enable nginx
+sudo systemctl start nginx
