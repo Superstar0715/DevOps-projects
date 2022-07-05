@@ -33,7 +33,7 @@ To get the most out of this repository, clone the root directory.
 
 ## What I've learned 
  * Linux -  
-   My troubleshooting and knowledge of operating systems has improved significantly. I can now explain in more detail how a machine runs and how programs/ processes interact with it. This includes the boot/ init process (systemd and sysVinit), deamons, binary files, how to install programs (package managers, cURL, or compiling from source code), networking and how to edit/ troubleshoot network settings, SSH and key management, and firewall configuration. 
+   My troubleshooting and knowledge of operating systems has improved significantly. I can now explain in more detail how a machine runs and how programs/ processes interact with the physical components. This includes the boot/ init process (systemd and sysVinit), deamons, binary files, how to install programs (package managers, cURL, or compiling from source code), networking and how to edit/ troubleshoot network settings, SSH and key management, and firewall configuration. 
  * Docker -  
    Running a container in interactive mode with command `docker run CONTAINER_NAME -it /bin/bash` is a very helpful way to troubleshoot networking and file permission issues from inside a container.  
  * Ansible -  
