@@ -5,3 +5,8 @@ Terraform/AWS Video Hosting/.terraform
 Terraform/AWS Video Hosting/.terraform.lock.hcl
 Terraform/AWS Web App/.terraform
 Terraform/AWS Web App/.terraform.lock.hcl
+Terraform/Azure K8s/variables.tf
+Terraform/Azure K8s/.terraform
+Terraform/Azure K8s/.terraform.lock.hcl
+Terraform/AWS Web App/terraform.tfstate
+Terraform/AWS Video Hosting/terraform.tfstate

@@ -111,7 +111,6 @@ resource "aws_security_group" "elb_webtrafic_sg" {
         to_port          = 22
         protocol         = "tcp"
         cidr_blocks      = ["0.0.0.0/0"]
-    #do I need another egress rule here to reach out to the internet? 
     }
     egress {
         description = "all traffic out"
@@ -162,11 +161,9 @@ resource "aws_security_group" "instance_sg" {
     }
 }
 
-#this is a workaround for the cyclical security group id call
-#I would like to figure out a way for this to destroy this first
-#it currently takes longer to destroy than to set up
-#terraform hangs because of the dependancy each SG has on each other, 
-#but will eventually struggle down to this rule and delete it, clearing the deadlock
+#this is a workaround for the cyclical security group id call error
+#This is also bad code, terraform recomends against create inline rules and standalone rules in the same SG
+#This works, but I'm working on reformatting
 resource "aws_security_group_rule" "elb_egress_to_webservers" {
   security_group_id        = aws_security_group.elb_webtrafic_sg.id
   type                     = "egress"
