@@ -69,11 +69,7 @@
     apt:
       name: docker-compose
       state: present
-  - name: check kubernetes
-    apt:
-      name: kubernetes
-      state: present
-      
+
 - name: configs for media server
   hosts: mediaserver
   become: true
