@@ -10,3 +10,4 @@ Terraform/Azure K8s/.terraform
 Terraform/Azure K8s/.terraform.lock.hcl
 Terraform/AWS Web App/terraform.tfstate
 Terraform/AWS Video Hosting/terraform.tfstate
+Vagrant/.vagrant

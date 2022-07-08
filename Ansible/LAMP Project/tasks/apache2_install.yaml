@@ -1,0 +1,26 @@
+- name: install appache
+  apt:
+    name: apache2
+    state: latest
+    update_cache: true
+
+- name: push appache 2 ports config file 
+  template:
+    scr: templates/ports.conf.j2
+    dest: /etc/apache2/ports.conf
+  notify:
+    - restart apache
+  tags: config
+
+- name: push appache html config file 
+  template:
+    src: templates/index.html.j2
+    dest: /var/www/html/index.html
+  notify:
+    - restart apache
+  tags: config
+
+- name: start apache service
+  service: 
+    name: apache2
+    state: started
