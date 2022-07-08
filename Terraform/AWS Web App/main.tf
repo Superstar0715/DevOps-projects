@@ -194,14 +194,14 @@ resource "aws_launch_template" "webserver_template" {
   name = "webserver-template"
 
 
-#this is good to know, but I'm not deploying it for money reasons
-  # block_device_mappings {
-  #   device_name = "/dev/sda1"
+/* this is good to know, but I'm not deploying it for money reasons
+  block_device_mappings {
+    device_name = "/dev/sda1"
 
-  #   ebs {
-  #     volume_size = 20
-  #   }
-  # }
+    ebs {
+      volume_size = 20
+    }
+  } */
 
   capacity_reservation_specification {
     capacity_reservation_preference = "open"
@@ -372,6 +372,8 @@ resource "aws_cloudwatch_metric_alarm" "web_cpu_alarm_down" {
 }
 
 
+
+
 /* resource "aws_s3_bucket" "webpage" {
     bucket = "tanchwa-webpage"
     tags    = {
@@ -396,8 +398,25 @@ resource "aws_s3_bucket_acl" "webpage_acl" {
 #webfront
 
 
-#database with read replica
+#database with failover read replica
+#Aurora database cluster primer
+#Start Here:
+#https://github.com/aws-ia/terraform-aws-rds-aurora/blob/main/main.tf#L95
+#https://github.com/aws-ia/terraform-aws-rds-aurora/blob/main/variables.tf
+#Get Here: 
+#private subnets, db subnet groups,  rds cluster, rds cluster instance
+#https://hands-on.cloud/terraform-managing-aws-vpc-creating-private-subnets/
+#https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_subnet_group
+#https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster
+#https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster_instance
 
+#still need a DB security group
+
+#Questions: what is a global cluster vs non global cluster?
+#what is a parameter group?
+#I will probably have to associate the newly made private subnets with the route table
+#maybe I will have to make a NAT gateway, and associate that with the routing table
+#no, if I want it fully isolated from the internet, just route it within the vpc and the instances should get to it
 
 #https://hands-on.cloud/terraform-recipe-managing-auto-scaling-groups-and-load-balancers/
 #https://www.terraform.io/language/meta-arguments/for_each
