@@ -91,34 +91,7 @@ resource "aws_security_group" "elb_webtrafic_sg" {
     name        = "elb-webtraffic-sg"
     description = "Allow inbound web trafic to load balancer"
     vpc_id      = aws_vpc.main_vpc.id
-    ingress {
-        description = "HTTPS trafic from vpc"
-        from_port        = 443
-        to_port          = 443
-        protocol         = "tcp"
-        cidr_blocks      = ["0.0.0.0/0"]
-    }
-    ingress {
-        description = "HTTP trafic from vpc"
-        from_port        = 80
-        to_port          = 80
-        protocol         = "tcp"
-        cidr_blocks      = ["0.0.0.0/0"]
-    }
-    ingress {
-        description = "allow SSH"
-        from_port        = 22
-        to_port          = 22
-        protocol         = "tcp"
-        cidr_blocks      = ["0.0.0.0/0"]
-    }
-    egress {
-        description = "all traffic out"
-        from_port        = 0
-        to_port          = 0
-        protocol         = "-1"
-        cidr_blocks      = ["0.0.0.0/0"]
-    }
+
     tags        = {
         Name = "elb-webtraffic-sg"
     }
@@ -162,8 +135,43 @@ resource "aws_security_group" "instance_sg" {
 }
 
 #this is a workaround for the cyclical security group id call error
-#This is also bad code, terraform recomends against create inline rules and standalone rules in the same SG
-#This works, but I'm working on reformatting
+
+resource "aws_security_group_rule" "HTTP_from_vpc" {
+  security_group_id        = aws_security_group.elb_webtrafic_sg.id
+  type                     = "ingress"
+  from_port                = 80
+  to_port                  = 80
+  protocol                 = "tcp"
+  cidr_blocks              = ["0.0.0.0/0"]
+}
+
+resource "aws_security_group_rule" "HTTPS_from_vpc" {
+  security_group_id        = aws_security_group.elb_webtrafic_sg.id
+  type                     = "ingress"
+  from_port                = 443
+  to_port                  = 443
+  protocol                 = "tcp"
+  cidr_blocks              = ["0.0.0.0/0"]
+}
+
+resource "aws_security_group_rule" "allow_SSH" {
+  security_group_id        = aws_security_group.elb_webtrafic_sg.id
+  type                     = "ingress"
+  from_port                = 22
+  to_port                  = 22
+  protocol                 = "tcp"
+  cidr_blocks              = ["0.0.0.0/0"]
+}
+
+resource "aws_security_group_rule" "all_traffic_out" {
+  security_group_id        = aws_security_group.elb_webtrafic_sg.id
+  type                     = "egress"
+  from_port                = 0
+  to_port                  = 0
+  protocol                 = "-1"
+  cidr_blocks              = ["0.0.0.0/0"]
+}
+
 resource "aws_security_group_rule" "elb_egress_to_webservers" {
   security_group_id        = aws_security_group.elb_webtrafic_sg.id
   type                     = "egress"
@@ -341,7 +349,7 @@ resource "aws_cloudwatch_metric_alarm" "web_cpu_alarm_up" {
     AutoScalingGroupName = aws_autoscaling_group.web_asg.name
   }
 
-  alarm_description = "This metric monitor EC2 instance CPU utilization"
+  alarm_description = "This metric monitors EC2 instance CPU utilization"
   alarm_actions = [ aws_autoscaling_policy.web_scale_up.arn ]
 }
 
@@ -359,7 +367,7 @@ resource "aws_cloudwatch_metric_alarm" "web_cpu_alarm_down" {
     AutoScalingGroupName = aws_autoscaling_group.web_asg.name
   }
 
-  alarm_description = "This metric monitor EC2 instance CPU utilization"
+  alarm_description = "This metric monitors EC2 instance CPU utilization"
   alarm_actions = [ aws_autoscaling_policy.web_scale_down.arn ]
 }
 
