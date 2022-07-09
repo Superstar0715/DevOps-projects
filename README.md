@@ -47,9 +47,9 @@ To get the most out of this repository, clone the root directory.
    So far, I have done all of this through the console and haven't needed to use a 3rd party API. Some important debugging tools I've learned are:  
    * `kubectl api-resources` to check which API version is used with each object
    * `kubectl exec -it DEPLOYMENT-REPLICASET-POD --/bin/bash` to run a pod interactively
-   * `kubectl get` nodes, services, deployments, pods, etc.  
-I've also learned how to network between namespaces by using the DNS name NameOfComponant.Namespace.TypeOfComponant.cluster.local
-   Configuring certificates, stateful sets, and setting up a cluster from scratch are still on the road ahead.  
+   * `kubectl get` nodes, services, deployments, pods, etc.   
+ I've also learned how to network between namespaces by using the DNS name NameOfComponant.Namespace.TypeOfComponant.cluster.local  
+ Configuring certificates, stateful sets, and setting up a cluster from scratch are still on the road ahead.  
 ## Credits
  Although changes have been made to their original code to suit my needs, I couldn't have done a lot of this without the help of a couple YouTubers.  
    * DB Tech's Docker Media Server  
