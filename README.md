@@ -46,9 +46,9 @@ To get the most out of this repository, clone the root directory.
    I have already learned the basic setup of a Kubernetes cluster and many of the objects available. Each master node requires ETCD, the API server, the scheduler, and the controller manager; while each worker node requires docker, kubelet, and kube proxy, and I understand the concepts of how these work together. I have hands on experience creating ingress, secrets, config maps, services and deployments, and volumes. I have also looked at Helm charts, but haven't used or written one, yet.  
    So far, I have done all of this through the console and haven't needed to use a 3rd party API. Some important debugging tools I've learned are:  
    * `kubectl api-resources` to check which API version is used with each object
-   * `kubectl exec -it NAME-REPLICASET-POD --/bin/bash` to run a pod interactively
+   * `kubectl exec -it DEPLOYMENT-REPLICASET-POD --/bin/bash` to run a pod interactively
    * `kubectl get` nodes, services, deployments, pods, etc.  
-
+I've also learned how to network between namespaces by using the DNS name NameOfComponant.Namespace.TypeOfComponant.cluster.local
    Configuring certificates, stateful sets, and setting up a cluster from scratch are still on the road ahead.  
 ## Credits
  Although changes have been made to their original code to suit my needs, I couldn't have done a lot of this without the help of a couple YouTubers.  
