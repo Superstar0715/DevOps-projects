@@ -2,14 +2,14 @@
 ansible-control
 
 [webservers]
-node1
-node2
+192.168.189.128 #node1
+192.168.189.129 #node2
 
 [proxy]
-loadbalancer
+192.168.189.131 #loadbalancer
 
 [database]
-db01
+192.168.189.130  #db01
 
 [webstack:children]
 proxy
@@ -18,3 +18,6 @@ database
 
 [admin:children]
 control
+
+[webstack:vars]
+ansible_user=human
