@@ -21,3 +21,6 @@ control
 
 [webstack:vars]
 ansible_user=human
+
+[database:vars]
+mysql_root_password=aVeryGoodAndSecurePassword

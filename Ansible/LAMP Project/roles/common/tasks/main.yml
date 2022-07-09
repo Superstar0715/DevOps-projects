@@ -1,0 +1,20 @@
+---
+# tasks file for common
+- name: Copy hosts file
+  template: src=hosts.j2 dest="/etc/hosts"
+  tags:
+    - always
+
+- name: "Copy Vim config"
+  template:
+    src: templates/.vimrc.j2
+    dest: /etc/vim/.vimrc
+  tags:
+    - always
+
+- name: Copy Vim pluggins
+  copy:
+    src: ~/.vim/bundle/
+    dest: /home/{{ ansible_user }}/.vim/bundle
+  tags:
+    - always

@@ -1,0 +1,59 @@
+---
+# tasks file for mysql
+- name: Install MySQL
+  apt:
+    name: mysql-server
+    state: latest
+    update_cache: yes
+  tags:
+    - installation
+
+- name: Install python module for MySQL
+  pip:
+    name: MySQL-python
+    state: latest
+  tags:
+    - installation
+
+
+- name: Sets the root password
+  mysql_user:
+    name: human
+    password: "{{ mysql_root_password }}"
+    state: present
+    # login_unix_socket: /var/run/mysqld/mysqld.sock
+  tags:
+    - configuration
+
+- name: Removes all anonymous user accounts
+  mysql_user:
+    name: ''
+    host_all: yes
+    state: absent
+    login_user: human
+    login_password: "{{ mysql_root_password }}"
+  tags:
+    - configuration
+
+- name: Removes the MySQL test database
+  mysql_db:
+    name: test
+    state: absent
+    login_user: human
+    login_password: "{{ mysql_root_password }}"
+  tags:
+    - configuration
+
+- name: Create a new database with name 'mtg_card_database'
+  mysql_db:
+    name: mtg_card_database
+    state: present
+  tags:
+    - configuration
+
+- name: Ensure mysql-server is running
+  service:
+    name: mysql
+    state: started
+  tags: 
+    - always

@@ -1,0 +1,16 @@
+set number
+set tabstop=4
+set expandtab
+filetype indent on
+set autoindent
+filetype off
+set background=dark
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+Plugin 'VundleVim/Vundle.vim'
+Plugin 'morhetz/gruvbox'
+call vundle#end()
+filetype plugin indent on
+let g:gruvbox_contrast_light = 'hard'
+colorscheme gruvbox
+"colorscheme elflord

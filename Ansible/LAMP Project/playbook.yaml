@@ -2,31 +2,6 @@
 ##presetup
 #ansible all -i inventory -m command -a 'sudo apt -y install python-simplejson'
 
-#- hosts: webservers
- # become: yes
-  #roles:
-   # - apache2
-    #- common
- # tags:
-  #  web
-
-#- hosts: proxy
- # become: yes
-  #roles: 
-   # - proxy
-    #- common
-  #tags: proxy
-
-#- hosts: databases
- # become: yes
-  #roles:
-   # - mariadb
-    #- common
-  #tags: database
-
- 
-
-
 - hosts: webservers
   become: yes
   vars:
@@ -35,6 +10,30 @@
     html_welcome_message: "Hello world!"
   roles:
     - apache2
+    - common
+  tags:
+    - web
+
+- hosts: proxy
+  become: yes
+  roles: 
+    - nginx_proxy
+    - common
+  tags:
+    - proxy
+
+- hosts: database
+  become: yes
+  roles:
+    - mysql
+    - common
+  tags:
+    - database
+
+ 
+
+
+
 
 
 

@@ -1,0 +1,32 @@
+---
+# tasks file for nginx_proxy
+- name: Install nginx
+  apt:
+    name: nginx
+    status: latest
+    update_cache: yes
+  tags:
+    - installation
+
+- name: Setup nginx proxy pass
+  template:
+    src: templates/loadbalancer.j2
+    dest: /etc/nginx/sites-enabled/loadbalancer
+  tags:
+    - configuration
+  notify:
+    - restart nginx
+
+- name: Remove default sites
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  tags:
+    - configuration
+
+- name: Ensure nginx is started
+  service:
+    name: nginx
+    state: started
+  tags:
+    - always
