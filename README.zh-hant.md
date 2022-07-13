@@ -25,7 +25,7 @@
  * Linux -  
    我排查故障以及OS知識都進步了很多。我正在可以更仔細的描述電腦構件運作及應用和形成跟實體構件互動， 包括引導/init (systemd and sysVinit), deamons, 二進文件, 如何安裝程序 (編碼包裹管理, cURL, 或者從源自編碼編輯), 聯網概念和如何改善或者排查聯網選項, SSH 和鑰匙管理, 和火成設計. 
  * Docker -  
-   用互動模式的命令而發動一個容器 `docker run CONTAINER_NAME -it /bin/bash` is a very helpful way to troubleshoot networking and file permission issues from inside a container.  
+   用互動模式的命令而發動一個容器 `docker run CONTAINER_NAME -it /bin/bash`從容器裏排查聯網和文件允許問題是非常幫助的。
  * Ansible -  
    When I first used ansible to copy over the config files for my media server, I accidentally set the ownership to Root. Being able to use the YAML file to see where I had gone wrong and fix the issue gave me my first taste of how useful infrastructure as code is. 
  * Kubernetes -  
