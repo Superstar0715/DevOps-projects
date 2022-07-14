@@ -1,5 +1,14 @@
 <html>
 
-<h1>{{ html_welcome_message }}</h1>
+<h1>{{ html_welcome_message }} You are currently connected to {{ ansible_facts.nodename }} through a load balancer. If you refresh the page, you might see a differnt name.</h1>
+
+<body>
+    
+    <form>
+        <label for="fact_input">Contribute a fact:</label><br>
+        <input type="text" id="fact_input" name="fact_input">
+    </form>
+
+</body>
 
 </html> 

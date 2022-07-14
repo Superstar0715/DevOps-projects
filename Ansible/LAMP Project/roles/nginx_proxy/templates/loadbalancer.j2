@@ -1,7 +1,7 @@
-#Dynamic Config for server {{ ansible_facts['nodename'] }}
+#Dynamic Config for server {{ ansible_facts.nodename }}
     upstream webservers {
-	{% for host in groups['webservers'] %}
-        server {{ hostvars[host]['ansible_facts']['nodename'] }}:{{http_port}};
+	{% for host in groups.webservers %}
+        server {{ hostvars.host.ansible_facts.nodename }}:{{http_port}};
     {% endfor %}
     }
 
