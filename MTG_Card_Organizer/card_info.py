@@ -2,6 +2,7 @@ from urllib.request import urlopen as uReq
 from urllib.error import HTTPError
 from bs4 import BeautifulSoup as soup
 from mtgsdk import Card, Set
+import sys
 
 
 def multiverse_lookup(multiverse_id):
@@ -70,10 +71,11 @@ if __name__ == "__main__":
         card_name, set_name = multiverse_lookup(multiverse_id)
         card_price = card_price_lookup(card_name, set_name)
         print(card_name + " from " +set_name + " is " + card_price)
-
-    multiverse_ids = [1135, 1, 2303, 74324, 525598, 10422]
-    for multiverse_id in multiverse_ids:
-        test_script(multiverse_id)
+        
+    if sys.argv != "--hush-demo":
+        multiverse_ids = [1135, 1, 2303, 74324, 525598, 10422]
+        for multiverse_id in multiverse_ids:
+            test_script(multiverse_id)
 
     user_input = input("Hi, Thomas! Try Me! Enter a card and set number to see its price!\n(formated in card_name, set_name):\nType 'exit' to exit\n>")
     while user_input != "exit":
