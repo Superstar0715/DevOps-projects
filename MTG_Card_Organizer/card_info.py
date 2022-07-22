@@ -15,7 +15,6 @@ def clean_input(card_name, set_name):
     bad_characters = {"'", ','}
     uncapitalized_words = {"Of", "For", "A", "The", "In", "An", "Vs"}
     #check if the bad characters are there and replace all of them
-    #thomas said that this doesn't need an if statement, also could just use regex
     for bad_character in card_name:
         if bad_character in bad_characters:
             card_name = card_name.replace(bad_character,"")
@@ -76,14 +75,15 @@ if __name__ == "__main__":
     for multiverse_id in multiverse_ids:
         test_script(multiverse_id)
 
-    user_input = ""
+    user_input = input("Hi, Thomas! Try Me! Enter a card and set number to see its price!\n(formated in card_name, set_name):\nType 'exit' to exit\n>")
     while user_input != "exit":
-        user_input = input("Hi, Thomas! Try Me! Enter a card and set number to see its price!\n(formated in card_name, set_name):\nType 'exit' to exit\n>")
-        if type(input) is tuple:
+        if "," in user_input:
             card_name, set_name = user_input.split(", ")
             card_price = card_price_lookup(card_name, set_name)
-            print(f"Your Card {card_name} from {set_name} is {card_price}\nEnter another card, or type 'exit' to exit")
+            print(f"Your Card {card_name} from {set_name} is {card_price}")
+            user_input = input("Enter another card, or type 'exit' to exit\n>")
         elif user_input == "exit":
             quit()
         else:
-            print("Please Enter a card name AND set name, or type exit to exit")
+            print("Please Enter a card name AND set name separated by a comma, or type exit to exit")
+            user_input = input(">")
