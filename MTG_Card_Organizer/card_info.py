@@ -1,8 +1,9 @@
+from email import parser
 from urllib.request import urlopen as uReq
 from urllib.error import HTTPError
 from bs4 import BeautifulSoup as soup
 from mtgsdk import Card, Set
-import sys
+import argparse
 
 
 def multiverse_lookup(multiverse_id):
@@ -71,8 +72,13 @@ if __name__ == "__main__":
         card_name, set_name = multiverse_lookup(multiverse_id)
         card_price = card_price_lookup(card_name, set_name)
         print(card_name + " from " +set_name + " is " + card_price)
-        
-    if sys.argv != "--hush-demo":
+
+    parser = argparse.ArgumentParser(description='Stops the demo from starting.')
+    parser.add_argument('--hush-demo', type=bool, default=False,
+        help='A demo is inclded with a few cards test out the code. Use --hush-demo to skip this.')
+    args = parser.parse_args()
+
+    if args.hush_demo == False:
         multiverse_ids = [1135, 1, 2303, 74324, 525598, 10422]
         for multiverse_id in multiverse_ids:
             test_script(multiverse_id)
