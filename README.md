@@ -48,6 +48,7 @@ To get the most out of this repository, clone the root directory.
    * `kubectl api-resources` to check which API version is used with each object
    * `kubectl exec -it DEPLOYMENT-REPLICASET-POD --/bin/bash` to run a pod interactively
    * `kubectl get` nodes, services, deployments, pods, etc.   
+   * `kubectl log PODNAME --previous` is very helpful for reading the logs of a previous pod that has dies if you weren't quick enough to load the logs while it was running
  I've also learned how to network between namespaces by using the DNS name NameOfComponant.Namespace.TypeOfComponant.cluster.local  
  Configuring certificates, stateful sets, and setting up a cluster from scratch are still on the road ahead.  
 ## Credits
