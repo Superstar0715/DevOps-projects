@@ -48,9 +48,9 @@ To get the most out of this repository, clone the root directory.
    * `kubectl api-resources` to check which API version is used with each object
    * `kubectl exec -it DEPLOYMENT-REPLICASET-POD --/bin/bash` to run a pod interactively
    * `kubectl get` nodes, services, deployments, pods, etc.   
-   * `kubectl log PODNAME --previous` is very helpful for reading the logs of a previous pod that has dies if you weren't quick enough to load the logs while it was running
- I've also learned how to network between namespaces by using the DNS name NameOfComponant.Namespace.TypeOfComponant.cluster.local  
- Configuring certificates, stateful sets, and setting up a cluster from scratch are still on the road ahead.  
+   * `kubectl log PODNAME --previous` is very helpful for reading the logs of a previous pod that has dies if you weren't quick enough to load the logs while it was running  
+ I've also learned how to network between namespaces by using the DNS name NameOfComponant.Namespace.TypeOfComponant.cluster.local, as well as configuring CNI compliant pod network pluggins  
+ After studying for my Kubernetes Certified Administrator exam, I have also learned how to configure certificates, various RBAC resources, as well as setting up a cluster from scratch  
 ## Credits
  Although changes have been made to their original code to suit my needs, I couldn't have done a lot of this without the help of a couple YouTubers.  
    * DB Tech's Docker Media Server  
