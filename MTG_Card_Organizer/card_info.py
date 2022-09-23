@@ -6,7 +6,7 @@ from mtgsdk import Card, Set
 import argparse
 
 
-def multiverse_lookup(multiverse_id):
+def lookup_multiverse_id(multiverse_id):
     card_info = Card.find(multiverse_id)
     card_name = card_info.name
     set_name = card_info.set_name
@@ -46,7 +46,7 @@ def clean_input(card_name, set_name):
     return card_name, set_name
 
 
-def card_price_lookup(card_name, set_name, foil=False):
+def lookup_card_price(card_name, set_name, foil=False):
     card_name, set_name = clean_input(card_name, set_name)
     if foil == True:
         set_name = set_name + ":Foil"
@@ -69,8 +69,8 @@ def card_price_lookup(card_name, set_name, foil=False):
 
 if __name__ == "__main__":
     def test_script(multiverse_id):
-        card_name, set_name = multiverse_lookup(multiverse_id)
-        card_price = card_price_lookup(card_name, set_name)
+        card_name, set_name = lookup_multiverse_id(multiverse_id)
+        card_price = lookup_card_price(card_name, set_name)
         print(card_name + " from " +set_name + " is " + card_price)
 
     parser = argparse.ArgumentParser(description='Stops the demo from starting.')
@@ -87,7 +87,7 @@ if __name__ == "__main__":
     while user_input != "exit":
         if "," in user_input:
             card_name, set_name = user_input.split(", ")
-            card_price = card_price_lookup(card_name, set_name)
+            card_price = lookup_card_price(card_name, set_name)
             print(f"Your Card {card_name} from {set_name} is {card_price}")
             user_input = input("Enter another card, or type 'exit' to exit\n>")
         elif user_input == "exit":
