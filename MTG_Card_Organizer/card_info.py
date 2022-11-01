@@ -83,7 +83,7 @@ if __name__ == "__main__":
         for multiverse_id in multiverse_ids:
             test_script(multiverse_id)
 
-    user_input = input("Hi, Thomas! Try Me! Enter a card and set number to see its price!\n(formated in card_name, set_name):\nType 'exit' to exit\n>")
+    user_input = input("Hi, Richard! Try Me! Enter a card and set number to see its price!\n(formated in card_name, set_name):\nType 'exit' to exit\n>")
     while user_input != "exit":
         if "," in user_input:
             card_name, set_name = user_input.split(", ")
