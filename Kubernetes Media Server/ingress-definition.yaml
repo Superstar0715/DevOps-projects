@@ -1,0 +1,85 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    ingress.kubernetes.io/ssl-redirect: "false"
+  creationTimestamp: null
+  name: mediaserver-ingress
+  namespace: mediaserver
+spec:
+  ingressClassName: public
+  rules:
+  - host: "emby.andrewsutliff.com"
+    http:
+      paths:
+      - backend:
+          service:
+            name: emby
+            port:
+              number: 8096
+        path: /
+        pathType: Prefix
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    ingress.kubernetes.io/ssl-redirect: "false"
+  name: mediaserver-ingress-private
+  namespace: mediaserver
+spec:
+  ingressClassName: private-ingress
+  rules:
+  - host: "qbittorrentvpn.andrewsutliff.com"
+    http:
+      paths:
+      - backend:
+          service:
+            name: qbittorrentvpn
+            port:
+              number: 8080
+        path: /
+        pathType: Prefix
+  - host: "sabnzbd.andrewsutliff.com"
+    http:
+      paths:
+      - backend:
+          service:
+            name: sabnzbd
+            port:
+              number: 8181
+        path: /
+        pathType: Prefix
+  - host: "radarr.andrewsutliff.com"
+    http:
+      paths:
+      - backend:
+          service:
+            name: radarr
+            port:
+              number: 7878
+        path: /
+        pathType: Prefix
+  - host: "jackett.andrewsutliff.com"
+    http:
+      paths:
+      - backend:
+          service:
+            name: jackett
+            port:
+              number: 9117
+        path: /
+        pathType: Prefix
+  - host: "sonarr.andrewsutliff.com"
+    http:
+      paths:
+      - backend:
+          service:
+            name: sonarr
+            port:
+              number: 8989
+        path: /
+        pathType: Prefix
+

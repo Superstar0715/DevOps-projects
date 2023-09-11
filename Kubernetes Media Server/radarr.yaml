@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert --volumes hostPath
+    kompose.version: 1.28.0 (c4137012e)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: radarr
+  name: radarr
+  namespace: mediaserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: radarr
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert --volumes hostPath
+        kompose.version: 1.28.0 (c4137012e)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/dockermediaserver-default: "true"
+        io.kompose.service: radarr
+    spec:
+      containers:
+        - env:
+            - name: TZ
+              value: America/New_York
+            - name: UMASK
+              value: "022"
+          image: linuxserver/radarr
+          name: radarr
+          ports:
+            - containerPort: 7878
+          resources: {}
+          volumeMounts:
+            - mountPath: /config
+              name: radarr-hostpath0
+            - mountPath: /movies
+              name: radarr-hostpath1
+            - mountPath: /downloads
+              name: radarr-hostpath2
+      restartPolicy: Always
+      volumes:
+        - hostPath:
+            path: /srv/Configs/Radarr
+          name: radarr-hostpath0
+        - hostPath:
+            path: /srv/Movies
+          name: radarr-hostpath1
+        - hostPath:
+            path: /srv/Torrents
+          name: radarr-hostpath2
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert --volumes hostPath
+    kompose.version: 1.28.0 (c4137012e)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: radarr
+  name: radarr
+  namespace: mediaserver
+spec:
+  ports:
+    - name: "7878"
+      port: 7878
+      targetPort: 7878
+  selector:
+    io.kompose.service: radarr
+status:
+  loadBalancer: {}

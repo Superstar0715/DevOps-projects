@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert --volumes hostPath
+    kompose.version: 1.28.0 (c4137012e)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: node-exporter
+  name: node-exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: node-exporter
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert --volumes hostPath
+        kompose.version: 1.28.0 (c4137012e)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/dockermediaserver-default: "true"
+        io.kompose.service: node-exporter
+    spec:
+      containers:
+        - args:
+            - --path.rootfs=/host
+          env:
+            - name: TZ
+              value: America/New_York
+          image: quay.io/prometheus/node-exporter:latest
+          name: node-exporter
+          resources: {}
+          volumeMounts:
+            - mountPath: /host
+              name: node-exporter-hostpath0
+              readOnly: true
+      restartPolicy: Always
+      volumes:
+        - hostPath:
+            path: /
+          name: node-exporter-hostpath0
+status: {}

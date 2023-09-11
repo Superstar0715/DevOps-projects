@@ -1,0 +1,254 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: private-ingress
+  labels:
+    name: private-ingress
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: private-ingress-controller
+  namespace: private-ingress
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: private-nginx-ingress
+  template:
+    metadata:
+      labels:
+        name: private-nginx-ingress
+    spec:
+      serviceAccountName: private-nginx-ingress
+      containers:
+        - name: private-nginx-ingress-controller
+          image: registry.k8s.io/ingress-nginx/controller:v1.8.1
+          args:
+          - /nginx-ingress-controller
+          - --election-id=private-ingress-controller-leader
+          - --publish-service=$(POD_NAMESPACE)/private-nginx-ingress
+          - --controller-class=k8s.io/private-nginx-ingress
+          - --ingress-class=k8s.io/private-ingress'
+          - --configmap=$(POD_NAMESPACE)/private-ingress-config
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          ports:
+            - name: http
+              containerPort: 80
+            - name: https
+              containerPort: 443
+---
+apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata:
+  name: private-ingress
+spec:
+  controller: k8s.io/private-nginx-ingress
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+ name: private-ingress-config
+ namespace: private-ingress
+data:
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: private-nginx-ingress
+  namespace: private-ingress
+spec:
+  type: NodePort
+  ports:
+  - port: 30080
+    nodePort: 30080
+    targetPort: 80
+    protocol: TCP
+    name: http
+  - port: 30443
+    nodePort: 30443
+    targetPort: 443
+    name: https
+  selector:
+    name: private-nginx-ingress
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: private-nginx-ingress
+  namespace: private-ingress
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: private-nginx-ingress
+rules:
+  - apiGroups:
+      - ''
+    resources:
+      - configmaps
+      - endpoints
+      - nodes
+      - pods
+      - secrets
+    verbs:
+      - list
+      - watch
+  - apiGroups:
+      - ''
+    resources:
+      - nodes
+    verbs:
+      - get
+  - apiGroups:
+      - ''
+    resources:
+      - services
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - extensions
+      - networking.k8s.io   # k8s 1.14+
+    resources:
+      - ingresses
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ''
+    resources:
+      - events
+    verbs:
+      - create
+      - patch
+  - apiGroups:
+      - extensions
+      - networking.k8s.io   # k8s 1.14+
+    resources:
+      - ingresses/status
+    verbs:
+      - update
+  - apiGroups:
+      - networking.k8s.io   # k8s 1.14+
+    resources:
+      - ingressclasses
+    verbs:
+      - get
+      - list
+      - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: private-nginx-ingress
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: private-nginx-ingress
+subjects:
+  - kind: ServiceAccount
+    name: private-nginx-ingress
+    namespace: private-ingress
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: private-nginx-ingress
+  namespace: private-ingress
+rules:
+  - apiGroups:
+      - ''
+    resources:
+      - namespaces
+    verbs:
+      - get
+  - apiGroups:
+      - ''
+    resources:
+      - configmaps
+      - pods
+      - secrets
+      - endpoints
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ''
+    resources:
+      - services
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - extensions
+      - networking.k8s.io   # k8s 1.14+
+    resources:
+      - ingresses
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - extensions
+      - networking.k8s.io   # k8s 1.14+
+    resources:
+      - ingresses/status
+    verbs:
+      - update
+  - apiGroups:
+      - networking.k8s.io   # k8s 1.14+
+    resources:
+      - ingressclasses
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ''
+    resources:
+      - configmaps
+    resourceNames:
+      - ingress-controller-leader-nginx
+    verbs:
+      - get
+      - update
+  - apiGroups:
+      - ''
+    resources:
+      - configmaps
+    verbs:
+      - create
+  - apiGroups:
+      - ''
+    resources:
+      - events
+    verbs:
+      - create
+      - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+   name: private-nginx-ingress
+  namespace: private-ingress
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: private-nginx-ingress
+subjects:
+  - kind: ServiceAccount
+    name: private-nginx-ingress
+    namespace: private-ingress
+---

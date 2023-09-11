@@ -1,0 +1,26 @@
+services:
+    qbittorrentvpn:
+      image: markusmcnugen/qbittorrentvpn
+      container_name: qbittorrentvpn
+      privileged: true
+      environment:
+        - VPN_USERNAME=${VPN_USERNAME}
+        - VPN_PASSWORD=${VPN_PASSWORD}
+        - PUID=${PUID}
+        - PGID=${PGID}
+        - WEBUI_PORT_ENV=8080
+        - INCOMING_PORT_ENV=8999
+        - VPN_ENABLED=yes
+        - LAN_NETWORK=192.168.1.0/24 #adjust this to YOUR network settings
+        - NAME_SERVERS=1.1.1.1,1.0.0.1 #you can use whatever DNS provider you want
+     ports:
+       - 8080:8080
+       - 8999:8999
+       - 8999:8999/udp
+     volumes:
+     #  - /srv/dev-disk-by-uuid-0d4a201c-b292-412d-ade6-cc5561e54f1f/Configs/QBittorrentVPN:/config
+     #  - /srv/dev-disk-by-uuid-0d4a201c-b292-412d-ade6-cc5561e54f1f/Torrents:/downloads
+       - /srv/Configs/QBittorrentVPN:/config
+       - /srv/Torrents:/downloads
+       - /etc/timezone:/etc/timezone:ro #This is for TimeZone
+     restart: unless-stopped

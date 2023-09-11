@@ -1,0 +1,100 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert --volumes hostPath
+    kompose.version: 1.28.0 (c4137012e)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: emby
+    app: emby
+  name: emby
+  namespace: mediaserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: emby
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert --volumes hostPath
+        kompose.version: 1.28.0 (c4137012e)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/dockermediaserver-default: "true"
+        io.kompose.service: emby
+    spec:
+      containers:
+        - env:
+          # - name: GID
+          #   value: "1000"
+            - name: GIDLIST
+              value: "44"
+            - name: TZ
+              value: "America/New_York"
+          # - name: UID
+          #   value: "1000"
+          image: emby/embyserver
+          name: emby
+          ports:
+            - containerPort: 8096
+              protocol: UDP
+            - containerPort: 8096
+            - containerPort: 8920
+          resources: {}
+          volumeMounts:
+            - mountPath: /config
+              name: emby-hostpath0
+            - mountPath: /data/tvshows
+              name: emby-hostpath1
+            - mountPath: /data/movies
+              name: emby-hostpath2
+            - mountPath: /data/XXX
+              name: emby-hostpath3
+      restartPolicy: Always
+      volumes:
+        - hostPath:
+            path: /srv/Configs/Emby
+          name: emby-hostpath0
+        - hostPath:
+            path: /srv/TV
+          name: emby-hostpath1
+        - hostPath:
+            path: /srv/Movies
+          name: emby-hostpath2
+        - hostPath:
+            path: /srv/XXX
+          name: emby-hostpath3
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert --volumes hostPath
+    kompose.version: 1.28.0 (c4137012e)
+  creationTimestamp: null
+  labels:
+    app: emby
+    io.kompose.service: emby
+  name: emby
+  namespace: mediaserver
+spec:
+  ports:
+    - name: "8096"
+      port: 8096
+      protocol: UDP
+      targetPort: 8096
+    - name: 8096-tcp
+      port: 8096
+      targetPort: 8096
+    - name: "8920"
+      port: 8920
+      targetPort: 8920
+  selector:
+    io.kompose.service: emby
+status:
+  loadBalancer: {}

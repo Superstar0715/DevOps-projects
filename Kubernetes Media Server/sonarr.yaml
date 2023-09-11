@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert --volumes hostPath
+    kompose.version: 1.28.0 (c4137012e)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: sonarr
+  name: sonarr
+  namespace: mediaserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: sonarr
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert --volumes hostPath
+        kompose.version: 1.28.0 (c4137012e)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/dockermediaserver-default: "true"
+        io.kompose.service: sonarr
+    spec:
+      containers:
+        - env:
+            - name: TZ
+              value: America/New_York
+            - name: UMASK
+              value: "022"
+          image: linuxserver/sonarr
+          name: sonarr
+          ports:
+            - containerPort: 8989
+          resources: {}
+          volumeMounts:
+            - mountPath: /config
+              name: sonarr-hostpath0
+            - mountPath: /tv
+              name: sonarr-hostpath1
+            - mountPath: /downloads
+              name: sonarr-hostpath2
+      restartPolicy: Always
+      volumes:
+        - hostPath:
+            path: /srv/Configs/Sonarr
+          name: sonarr-hostpath0
+        - hostPath:
+            path: /srv/TV
+          name: sonarr-hostpath1
+        - hostPath:
+            path: /srv/Torrents
+          name: sonarr-hostpath2
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert --volumes hostPath
+    kompose.version: 1.28.0 (c4137012e)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: sonarr
+  name: sonarr
+  namespace: mediaserver
+spec:
+  ports:
+    - name: "8989"
+      port: 8989
+      targetPort: 8989
+  selector:
+    io.kompose.service: sonarr
+status:
+  loadBalancer: {}
