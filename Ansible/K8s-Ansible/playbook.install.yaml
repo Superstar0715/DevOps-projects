@@ -39,8 +39,11 @@
     - add_node
   tags: add-node
 
-  - hosts: ansible_controller
+- hosts: ansible_controller
   vars:
     common_name: ansible
   roles: 
     - generate_csr
+
+- hosts: controlplane_nodes
+  COPY CSR TO NODE
