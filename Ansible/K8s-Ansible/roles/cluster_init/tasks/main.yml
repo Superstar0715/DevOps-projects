@@ -1,0 +1,6 @@
+---
+# tasks file for cluster
+- include_tasks: controlplane.yaml
+
+# work on how to create the join command on master and copy to temp file for workers
+

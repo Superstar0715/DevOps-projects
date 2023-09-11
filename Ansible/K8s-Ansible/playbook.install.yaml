@@ -1,0 +1,40 @@
+---
+- hosts: all
+  become: yes
+  become_user: root
+  vars:
+    containerd_config_default_write: true
+    containerd_config_cgroup_driver_systemd: true
+    kubeadm_version: 1.25.0-00
+    kubectl_version: 1.25.0-00
+    kubelet_version: 1.25.0-00
+  roles:
+    - kernel_config
+    - repositories
+    - kubeadm
+    - kubelet
+    - kubectl
+    - containerd
+  tags: pre-k8s-init
+
+- hosts: controlplane_nodes
+  become: yes
+  become_user: root
+  vars:
+    pod_network_cidr: 10.244.0.0/16 # pod CIDR range for cluster init, change this to match your CNI pluggin CIDR configuration
+    host_ip: "{{ ansible_default_ipv4.address }}"
+    host_name: "{{ inventory_hostname }}"
+    kube_user: "cloud_user"
+    kube_config_path: "/home/{{ kube_user }}/.kube/config"
+    flannel: true #set the name of the CNI plugin you want to use to true, currently supports only flannel
+  roles:
+    - cluster_init
+    - cni
+  tags: cluster-init
+
+- hosts: worker_nodes
+  become: yes
+  become_user: root
+  roles:
+    - add-node
+  tags: add-node

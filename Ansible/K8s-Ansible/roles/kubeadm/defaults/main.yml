@@ -1,0 +1,3 @@
+---
+# defaults file for kubeadm
+kubeadm_version: 1.25.0-00

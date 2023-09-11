@@ -1,0 +1,7 @@
+---
+- name: Use kubeadm to Upgrade Cluster
+  command: |
+    kubeadm upgrade plan
+  register: 
+
+- name: Upgrade kubeadm if Available Version is < Desired Version

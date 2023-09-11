@@ -1,0 +1,16 @@
+---
+# tasks file for kubelet
+- name: Install kubelet
+  apt:
+    name: kubelet={{ kubelet_version }}
+    state: present
+    update_cache: yes
+    allow_change_held_packages: true
+    allow_downgrade: true
+  tags: install
+  notify: Restart kubelet
+
+- name: Hold kubelet
+  dpkg_selections:
+    name: kubelet
+    selection: hold

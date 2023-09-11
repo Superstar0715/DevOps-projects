@@ -1,0 +1,20 @@
+---
+# tasks file for kubeadm
+- name: Install kubeadm
+  apt:
+    name: kubeadm={{ kubeadm_version }}
+    state: present
+    update_cache: yes
+    allow_change_held_packages: true
+    allow_downgrade: true
+  tags: install
+
+- name: Hold kubeadm
+  dpkg_selections:
+    name: kubeadm
+    selection: hold
+
+#- include_tasks: upgrade_cluster.yaml
+#  when: playbook.upgrade.yaml is run
+
+

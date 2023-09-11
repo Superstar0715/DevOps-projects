@@ -1,0 +1,39 @@
+---
+- name: Ensure Dependencies are Installed
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - gnupg2
+      - curl
+      - software-properties-common
+    state: present
+
+- name: Add K8s GPG Signing Keys
+  apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    keyring: /usr/share/keyrings/kubernetes-archive-keyring.gpg
+    state: present
+  tags: pre-k8s-init
+
+- name: Add Repo to Sources List
+  apt_repository:
+    repo: "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main"
+    state: present
+    filename: kubernetes
+  tags: pre-k8s-init
+
+- name: Add an apt signing key for Docker
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    keyring: /usr/share/keyrings/docker-archive-keyring.gpg
+    state: present
+
+- name: Add apt repository for stable version
+  apt_repository:
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable" #may need to change release
+    state: present
+    filename: docker
+
+
+# https://github.com/geerlingguy/ansible-role-containerd/blob/master/tasks/setup-Debian.yml

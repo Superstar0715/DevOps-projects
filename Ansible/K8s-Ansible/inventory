@@ -1,0 +1,10 @@
+## use if your ansible controller is the same as the control plane node, 
+## may break on some modules due to ansible refusing to do certain elevated tasks on it's own node
+## [controlplane_nodes]
+## k8s-controlplane ansible_connection=local
+
+[controlplane_nodes]
+k8s-controlplane
+
+[worker_nodes]
+k8s-node[01:02]

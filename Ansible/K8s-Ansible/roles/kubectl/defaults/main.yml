@@ -1,0 +1,3 @@
+---
+# defaults file for kubectl
+kubectl_version: 1.25.0-00

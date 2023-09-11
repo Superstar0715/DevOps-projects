@@ -1,0 +1,54 @@
+---
+# tasks file for containerd
+- name: Install containerd
+  apt:
+    name: containerd.io
+    update_cache: yes
+    state: present
+
+  tags: pre-k8s-init
+
+- name: Get defaults from containerd
+  command: containerd config default
+  changed_when: false
+  register: containerd_config_default
+  when: containerd_config_default_write
+
+- name: Prepare containerd/config.toml from Default Config
+  copy:
+    dest: /tmp/containerd_config.toml
+    content: "{{ containerd_config_default.stdout }}"
+  when: containerd_config_default_write
+  changed_when: false
+
+- name: Set Cgroup driver to systemd
+  lineinfile:
+    insertafter: '.*\[plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options\]$'
+    line: '            SystemdCgroup = true' #this needs to be changed to better regex
+    state: present
+    path: /tmp/containerd_config.toml
+  when: containerd_config_default_write and containerd_config_cgroup_driver_systemd
+  changed_when: false
+
+- name: Make sure  SystemdCgroup = false is not set
+  ansible.builtin.lineinfile:
+    path: /tmp/containerd_config.toml
+    state: absent
+    line: '            SystemdCgroup = false' #this needs to be changed to be better regex
+  notify: restart containerd
+  when: containerd_config_default_write and containerd_config_cgroup_driver_systemd
+  changed_when: false
+
+- name: Copy config.toml to /etc/containerd
+  copy:
+    remote_src: true
+    src: /tmp/containerd_config.toml
+    dest: /etc/containerd/config.toml
+  notify: restart containerd
+  when: containerd_config_default_write
+
+- name: Cleanup temporary file
+  file:
+    path: /tmp/containerd_config.toml
+    state: absent
+  changed_when: false

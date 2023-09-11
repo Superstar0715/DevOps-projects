@@ -1,0 +1,53 @@
+---
+# tasks file for kernel_config
+- name: Copy Kernel Config Files to Kubernetes CRI Unitfile
+  copy:
+    src: ../files/99-kubernetes-cri.conf
+    dest: /etc/sysctl.d/99-kubernetes-cri.conf
+    owner: root
+    group: root
+    mode: u=rwx,g=rx,o=rx
+  tags: pre-k8s-init
+
+- name: Copy Kernel Config Files to Containerd Unitfile
+  copy:
+    src: ../files/containerd.conf
+    dest: /etc/modules-load.d/containerd.conf
+    owner: root
+    group: root
+    mode: u=rwx,g=rx,o=rx
+  tags: pre-k8s-init
+
+- name: Turn Off Swap
+  shell: |
+    swapoff -a
+  tags: pre-k8s-init
+
+- name: Turn Off Swap in Fstab
+  replace:
+    path: /etc/fstab
+    regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
+    replace: '# \1'
+  tags: pre-k8s-init
+
+- name: Load overlay
+  community.general.modprobe:
+    name: overlay
+    state: present
+  tags: pre-k8s-init
+
+- name: Load br_netfilter
+  community.general.modprobe:
+    name: br_netfilter
+    state: present
+  tags: pre-k8s-init
+
+- name: Set IPtables Forwarding to True in /proc and Sysctl File
+  ansible.posix.sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+    sysctl_set: true
+    state: present
+    reload: true
+  tags: pre-k8s-init
+

@@ -1,0 +1,3 @@
+---
+# defaults file for kubelet
+kubelet_version: 1.25.0-00

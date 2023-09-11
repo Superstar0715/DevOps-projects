@@ -1,0 +1,36 @@
+---
+- name: Initialize the Kubernetes cluster using kubeadm
+  command: |
+    kubeadm init --apiserver-advertise-address="{{ host_ip }}" \
+    --node-name="{{ host_name }}" \
+    --pod-network-cidr="{{ pod_network_cidr }}"
+#need to change variables
+  tags: cluster-init
+
+- name: Generate join command
+  command: kubeadm token create --print-join-command
+  register: join_command
+  tags: cluster-init
+
+- name: Copy join command to local file
+  copy:
+    content: "{{ join_command.stdout_lines[0] }}" 
+    dest: "/tmp/join-command.sh"
+  tags: cluster-init
+
+- name: mkdir for kubeconfig
+  file: 
+    path: "/home/{{ kube_user }}/.kube"
+    state: directory
+    owner: "{{ kube_user }}"
+    group: "{{ kube_user }}"
+  tags: cluster-init
+
+#- name: Create kubeconfig for local user
+#  become: true
+#  become_user: root
+#  copy:
+#    src: /etc/kubernetes/admin.conf
+#    dest: "{{ kube_config_path }}"
+#    owner: "{{ kube_user }}"
+#    group: "{{ kube_user }}"
