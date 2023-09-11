@@ -1,0 +1,12 @@
+---
+# tasks file for generate_csr
+- name: Generate an OpenSSL private key with the default values (4096 bits, RSA) and a passphrase
+  community.crypto.openssl_privatekey:
+    path: /etc/ssl/private/ansible.com.pem
+    cipher: auto
+
+- name: Generate an OpenSSL Certificate Signing Request
+  community.crypto.openssl_csr:
+    path: /etc/ssl/csr/www.ansible.com.csr
+    privatekey_path: /etc/ssl/private/ansible.com.pem
+    common_name: www.ansible.com

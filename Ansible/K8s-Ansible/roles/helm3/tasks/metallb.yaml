@@ -1,0 +1,5 @@
+---
+- name: Set ARP settings to strict, Required for MetalLB
+  ansible.builtin.shell: "kubectl get configmap kube-proxy -n kube-system -o yaml | sed -e 's/strictARP: false/strictARP: true/' | kubectl apply -f - -n kube-system"
+  register: res
+  changed_when: res.rc != 0

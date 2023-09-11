@@ -32,9 +32,14 @@
     - cni
   tags: cluster-init
 
+- hosts: ansible_controller
+  vars:
+    common_name: ansible
+  roles: generate_csr
+
 - hosts: worker_nodes
   become: yes
   become_user: root
   roles:
-    - add-node
+    - add_node
   tags: add-node
