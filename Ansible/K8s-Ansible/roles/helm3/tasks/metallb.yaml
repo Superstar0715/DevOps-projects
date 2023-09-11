@@ -1,5 +1,17 @@
 ---
-- name: Set ARP settings to strict, Required for MetalLB
+- name: Set ARP Settings to Strict, Required for MetalLB
   ansible.builtin.shell: "kubectl get configmap kube-proxy -n kube-system -o yaml | sed -e 's/strictARP: false/strictARP: true/' | kubectl apply -f - -n kube-system"
   register: res
   changed_when: res.rc != 0
+
+- name: Add MetalLB Helm Repository
+  kubernetes.core.helm_repository:
+    name: metallb
+    repo_url: https://metallb.github.io/metallb
+
+- name: Deploy MetalLB Manifests
+  kubernetes.core.helm:
+    kubeconfig: {{ ANSIBLE_USER_HOME }}.kube/config #change to actual relative path to deploy
+    name: metallb
+    chart_ref: metallb/metallb
+    values_files: /templates/metallb.values.yaml
