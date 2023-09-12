@@ -1,0 +1,12 @@
+# vars file
+---
+ufw_dependencies:
+  - ufw
+  - iproute2
+  - procps
+
+ufw_facts:
+  default_incoming_policy: "{{ ufw_default_incoming_policy }}"
+  default_outgoing_policy: "{{ ufw_default_outgoing_policy }}"
+  logging: "{{ ufw_logging }}"
+  rules: "{{ ufw_rules }}"
