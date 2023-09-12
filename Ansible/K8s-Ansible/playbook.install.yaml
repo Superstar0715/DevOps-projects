@@ -95,5 +95,3 @@
 - hosts: ansible_controller
   roles:
     - argo_cd
-
-
