@@ -3,8 +3,14 @@
 ## [controlplane_nodes]
 ## k8s-controlplane ansible_connection=local
 
+## use this if your ansible controller is NOT your control plane node
+
+[ansible_controller]
+localhost ansible_connection=local
+
 [controlplane_nodes]
 k8s-controlplane
 
 [worker_nodes]
-k8s-node[01:02]
+## k8s-node[01:02]
+k8s-node01

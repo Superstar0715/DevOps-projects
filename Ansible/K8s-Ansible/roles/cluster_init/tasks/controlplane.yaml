@@ -18,19 +18,7 @@
     dest: "/tmp/join-command.sh"
   tags: cluster-init
 
-- name: mkdir for kubeconfig
-  file: 
-    path: "/home/{{ kube_user }}/.kube"
-    state: directory
-    owner: "{{ kube_user }}"
-    group: "{{ kube_user }}"
-  tags: cluster-init
-
-#- name: Create kubeconfig for local user
-#  become: true
-#  become_user: root
-#  copy:
-#    src: /etc/kubernetes/admin.conf
-#    dest: "{{ kube_config_path }}"
-#    owner: "{{ kube_user }}"
-#    group: "{{ kube_user }}"
+- name: Fetch join command back to local host
+  fetch:
+    src: /tmp/join-command.sh
+    dest: /tmp/join-command.sh

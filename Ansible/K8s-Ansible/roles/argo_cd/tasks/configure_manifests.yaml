@@ -1,0 +1,9 @@
+- name: Create ArgoCD Namespace
+  command: kubectl create namespace argocd
+
+- name: Install Manifests
+  command: kubectl apply -n argocd -f "{{ argo_cd_manifest_repo_url }}"
+
+- name: Configure ArgoCD serivice
+  command: |
+    kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
