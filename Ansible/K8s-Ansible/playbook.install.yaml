@@ -8,9 +8,18 @@
     kubeadm_version: 1.25.0-00
     kubectl_version: 1.25.0-00
     kubelet_version: 1.25.0-00
+    ufw_rules:
+    - rule: allow
+      direction: in
+      to_port: "{{ items.kube_ports }}"
+      from_ip: "{{ items.hosts }}"
+    with_items: 
+      - kube_ports: [ 6443, 2379, 2380, 10250, 10259, 10257 ]
+      - hosts: "{{ ansible_all_ipv4_address }}"
   roles:
     - kernel_config
     - repositories
+    - ansible-ufw
     - kubeadm
     - kubelet
     - kubectl
@@ -26,6 +35,7 @@
     host_name: "{{ inventory_hostname }}"
     kube_user: "asutliff"
     kube_config_path: "/home/{{ kube_user }}/.kube/config"
+    default_config: true
     flannel: true #set the name of the CNI plugin you want to use to true, currently supports only flannel
   roles:
     - cluster_init
@@ -44,7 +54,7 @@
   become: yes
   become_user: asutliff
   tasks:
-  - name: Generate an OpenSSL private key with the default values (4096 bits, RSA) and a passphrase
+  - name: Generate an OpenSSL private key with the default values (4096 bits, RSA)
     community.crypto.openssl_privatekey:
       path: /etc/ssl/private/ansible.com.pem
       cipher: auto
@@ -53,12 +63,13 @@
       path: /etc/ssl/csr/ansible.csr
       privatekey_path: /etc/ssl/private/ansible.pem
       common_name: asutliff
+      organization_name: system:masters
 
 - hosts: controlplane_nodes #figure out how to limit this to only a single host
   tasks:
   - name: Copy CSR to Controleplane
     copy:
-      src: /etc/ssl/csr/www.ansible.com.csr
+      src: /etc/ssl/csr/ansible.csr
       dest: ~/ansible.csr
   - name: Convert CSR into Usable format
     command: cat ansible.csr | base64 | tr -d "\n"
@@ -89,6 +100,7 @@
   vars:
     kube_user: "asutliff"
     kube_config_path: "/home/{{ kube_user }}/.kube/config"
+    new_user_config: true
   roles:
     - kubeconfig
 
