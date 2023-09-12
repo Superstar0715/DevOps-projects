@@ -1,0 +1,15 @@
+---
+# tasks file for kubeconfig
+- name: mkdir for kubeconfig
+  file: 
+    path: "/home/{{ kube_user }}/.kube"
+    state: directory
+    owner: "{{ kube_user }}"
+    group: "{{ kube_user }}"
+
+- name: Create kubeconfig for local user
+ copy:
+   src: /etc/kubernetes/admin.conf
+   dest: "{{ kube_config_path }}"
+   owner: "{{ kube_user }}"
+   group: "{{ kube_user }}"

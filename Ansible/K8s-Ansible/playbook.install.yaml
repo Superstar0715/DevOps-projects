@@ -24,11 +24,12 @@
     pod_network_cidr: 10.244.0.0/16 # pod CIDR range for cluster init, change this to match your CNI pluggin CIDR configuration
     host_ip: "{{ ansible_default_ipv4.address }}"
     host_name: "{{ inventory_hostname }}"
-    kube_user: "cloud_user"
+    kube_user: "asutliff"
     kube_config_path: "/home/{{ kube_user }}/.kube/config"
     flannel: true #set the name of the CNI plugin you want to use to true, currently supports only flannel
   roles:
     - cluster_init
+    - kubeconfig
     - cni
   tags: cluster-init
 
@@ -40,10 +41,59 @@
   tags: add-node
 
 - hosts: ansible_controller
-  vars:
-    common_name: ansible
-  roles: 
-    - generate_csr
+  become: yes
+  become_user: asutliff
+  tasks:
+  - name: Generate an OpenSSL private key with the default values (4096 bits, RSA) and a passphrase
+    community.crypto.openssl_privatekey:
+      path: /etc/ssl/private/ansible.com.pem
+      cipher: auto
+  - name: Generate an OpenSSL Certificate Signing Request
+    community.crypto.openssl_csr:
+      path: /etc/ssl/csr/ansible.csr
+      privatekey_path: /etc/ssl/private/ansible.pem
+      common_name: asutliff
 
-- hosts: controlplane_nodes
-  COPY CSR TO NODE
+- hosts: controlplane_nodes #figure out how to limit this to only a single host
+  tasks:
+  - name: Copy CSR to Controleplane
+    copy:
+      src: /etc/ssl/csr/www.ansible.com.csr
+      dest: ~/ansible.csr
+  - name: Convert CSR into Usable format
+    command: cat ansible.csr | base64 | tr -d "\n"
+    register: ansible_csr
+  - name: Create CSR Kubernetes Object
+    command: |
+      cat <<EOF | kubectl create -f 
+      apiVersion: certificates.k8s.io/v1beta
+      kind: CertificateSigningRequest
+      metadata:
+        name: asutliff
+      spec:
+        groups:
+        - system: authenticated
+        uses:
+        - digital signature
+        - key encipherment
+        - server auth
+        request:
+          "{{ ansible_csr.stout_lines[0] }}"
+      EOF
+  - name: Sign CSR
+    command: kubectl certificate approve asutliff
+
+- hosts: ansible_controller
+  become: yes
+  become_user: asutliff
+  vars:
+    kube_user: "asutliff"
+    kube_config_path: "/home/{{ kube_user }}/.kube/config"
+  roles:
+    - kubeconfig
+
+- hosts: ansible_controller
+  roles:
+    - argo_cd
+
+

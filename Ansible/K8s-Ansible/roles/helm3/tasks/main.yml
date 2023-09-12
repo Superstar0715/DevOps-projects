@@ -1,6 +1,7 @@
 ---
 # tasks file for helm3
-- name: Install Helm Charts for Various Deployments
-  include_tasks: 
-    file: monitoring.yaml
-    file: 
+- include_tasks: 
+- include_tasks: 
+- include_tasks: 
+- include_tasks: 
+- include_tasks: 
