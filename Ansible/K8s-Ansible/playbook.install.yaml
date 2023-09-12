@@ -16,6 +16,11 @@
     with_items: 
       - kube_ports: [ 6443, 2379, 2380, 10250, 10259, 10257 ]
       - hosts: "{{ ansible_all_ipv4_address }}"
+      # or does it looks like this?
+      - kube_ports: 6443
+        hosts: #a host
+      - kube_ports: 2379
+        hosts: #a host
   roles:
     - kernel_config
     - repositories
