@@ -1,5 +1,30 @@
 ---
-- hosts: all
+- hosts: ansible_controller
+  gather_facts: true
+  vars:
+    kube_ports: 
+      - 6443 
+      - 2379
+      - 2380
+      - 10250
+      - 10259
+      - 10257
+    kube_hosts: "{{ ansible_all_ipv4_addresses | difference([hostvars[inventory_hostname].ansible_default_ipv4.address]) }}"
+  tasks:
+    - name: Create ufw_rules map
+      set_fact: 
+        ufw_rules: "{{ ufw_rules | default([]) + [{'rule': 'allow', 'direction': 'in', 'to_port': item.0, 'from_ip': item.1}] }}"
+      loop: "{{ kube_ports | product(kube_hosts) | list }}"
+      loop_control:
+        loop_var: item
+
+    - name: Debug
+      debug:
+        var: kube_hosts
+  tags:
+    - set-ufw-rules
+
+- hosts: controlplane_nodes, worker_nodes
   become: yes
   become_user: root
   vars:
@@ -8,19 +33,9 @@
     kubeadm_version: 1.25.0-00
     kubectl_version: 1.25.0-00
     kubelet_version: 1.25.0-00
-    ufw_rules:
-    - rule: allow
-      direction: in
-      to_port: "{{ items.kube_ports }}"
-      from_ip: "{{ items.hosts }}"
+    ufw_rules: item
     with_items: 
-      - kube_ports: [ 6443, 2379, 2380, 10250, 10259, 10257 ]
-      - hosts: "{{ ansible_all_ipv4_address }}"
-      # or does it looks like this?
-      - kube_ports: 6443
-        hosts: #a host
-      - kube_ports: 2379
-        hosts: #a host
+     ufw_rules: "{{ ufw_rules }}"
   roles:
     - kernel_config
     - repositories
@@ -110,5 +125,6 @@
     - kubeconfig
 
 - hosts: ansible_controller
+  become: true
   roles:
     - argo_cd
