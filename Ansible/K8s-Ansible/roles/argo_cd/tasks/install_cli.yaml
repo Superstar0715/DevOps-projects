@@ -1,0 +1,9 @@
+- name: Download source
+  get_url:
+    url: https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+    dest: /usr/src/argocd-linux-amd64
+
+- name: Install
+  command: |
+    sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd \
+    rm argocd-linux-amd64
