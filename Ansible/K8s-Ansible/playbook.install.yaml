@@ -77,42 +77,53 @@
   tasks:
   - name: Generate an OpenSSL private key with the default values (4096 bits, RSA)
     community.crypto.openssl_privatekey:
-      path: /etc/ssl/private/ansible.com.pem
+      path: ~/ansible.pem
   - name: Generate an OpenSSL Certificate Signing Request
     community.crypto.openssl_csr:
-      path: /etc/ssl/csr/ansible.csr
-      privatekey_path: /etc/ssl/private/ansible.pem
+      path: ~/ansible.csr
+      privatekey_path: ~/ansible.pem
       common_name: asutliff
       organization_name: system:masters
+  tags: csr
 
 - hosts: controlplane_nodes #figure out how to limit this to only a single host
+  become_user: asutliff
   tasks:
   - name: Copy CSR to Controleplane
     copy:
-      src: /etc/ssl/csr/ansible.csr
-      dest: ~/ansible.csr
+      src: ~/ansible.csr
+      dest: ~/
   - name: Convert CSR into Usable format
-    command: cat ansible.csr | base64 | tr -d "\n"
+    shell: |
+      cat ansible.csr | base64 | tr -d '\n'
     register: ansible_csr
   - name: Create CSR Kubernetes Object
-    command: |
-      cat <<EOF | kubectl create -f 
-      apiVersion: certificates.k8s.io/v1beta
+    shell: |
+      cat <<EOF | kubectl create -f -
+      apiVersion: certificates.k8s.io/v1
       kind: CertificateSigningRequest
       metadata:
         name: asutliff
       spec:
-        groups:
-        - system: authenticated
-        uses:
+        signerName: kubernetes.io/kube-apiserver-client
+        usages:
         - digital signature
         - key encipherment
-        - server auth
+        - server auth 
         request:
-          "{{ ansible_csr.stout_lines[0] }}"
+          "{{ ansible_csr.stdout }}"
       EOF
   - name: Sign CSR
     command: kubectl certificate approve asutliff
+  - name: Output Signed CSR Certificate
+    shell: |
+      "kubectl get csr  -o yaml | grep -e '^    certificate:' | sed 's/    certificate://'"
+    register: signed_cert
+  - name: Copy Signed CSR Certificate to Controller
+    fetch:
+      content: "{{ signed_cert.stdout }}"
+      dest: ~/ansible.crt
+  tags: csr
 
 - hosts: ansible_controller
   become: yes
@@ -120,8 +131,10 @@
   vars:
     kube_user: "asutliff"
     kube_config_path: "/home/{{ kube_user }}/.kube/config"
+    certificate_path: "home/{{ kube_user }}/ansible.pem"
+    key_path: "home/{{ kube_user }}/ansible.pem"
     new_user_config: true
-    default_user_config: false
+    default_config: false
   roles:
     - kubeconfig
 
