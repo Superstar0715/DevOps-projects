@@ -2,10 +2,16 @@
 # tasks file for add-node
 - name: Copy Join Command to Nodes
   copy:
-    src: "/tmp/join-command.sh"
+    src: "/tmp/k8s-controlplane/tmp/join-command.sh"
     dest: "/tmp"
     mode: ugo=rwx
   tags: cluster-init
 
 - name: Join Node to Cluster
   command: sh /tmp/join-command.sh
+
+- name: Clean Up temp files for join command
+  file:
+    path: /tmp/join-command.sh
+    state: absent
+  changed_when: false
