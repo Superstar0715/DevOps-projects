@@ -33,13 +33,13 @@
     kubeadm_version: 1.25.0-00
     kubectl_version: 1.25.0-00
     kubelet_version: 1.25.0-00
-    ufw_rules: item
-    with_items: 
-     ufw_rules: "{{ ufw_rules }}"
+    # ufw_rules: item
+    # with_items: 
+    #  ufw_rules: "{{ ufw_rules }}"
   roles:
     - kernel_config
     - repositories
-    - ansible-ufw
+    # - ansible-ufw
     - kubeadm
     - kubelet
     - kubectl

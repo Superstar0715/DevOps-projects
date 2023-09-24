@@ -9,7 +9,7 @@
 
 - name: Create default kubeconfig for on-master user
   copy:
-    src: /etc/kubernetes/admin.conf
+    remote_src: /etc/kubernetes/admin.conf
     dest: "{{ kube_config_path }}"
     owner: "{{ kube_user }}"
     group: "{{ kube_user }}"
