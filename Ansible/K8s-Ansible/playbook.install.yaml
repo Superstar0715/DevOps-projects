@@ -78,7 +78,6 @@
   - name: Generate an OpenSSL private key with the default values (4096 bits, RSA)
     community.crypto.openssl_privatekey:
       path: /etc/ssl/private/ansible.com.pem
-      cipher: auto
   - name: Generate an OpenSSL Certificate Signing Request
     community.crypto.openssl_csr:
       path: /etc/ssl/csr/ansible.csr
