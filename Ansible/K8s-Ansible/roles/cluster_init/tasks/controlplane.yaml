@@ -21,4 +21,4 @@
 - name: Fetch join command back to local host
   fetch:
     src: /tmp/join-command.sh
-    dest: /tmp/join-command.sh
+    dest: /tmp

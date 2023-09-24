@@ -3,7 +3,7 @@
 - name: Copy Join Command to Nodes
   copy:
     src: "/tmp/join-command.sh"
-    dest: "/tmp/join-command.sh"
+    dest: "/tmp"
     mode: ugo=rwx
   tags: cluster-init
 

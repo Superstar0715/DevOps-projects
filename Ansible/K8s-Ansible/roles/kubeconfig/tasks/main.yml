@@ -10,16 +10,16 @@
 - name: Fetch default kube configuration
   fetch:
     src: /etc/kubernetes/admin.conf
-    dest: /tmp/kubernetes/admin.conf
-    when: default_config
+    dest: /tmp
+  when: default_config
 
 - name: Create default kubeconfig for on-master user
   copy:
-    src: /tmp/kubernetes/admin.conf
+    src: /tmp/{{ ansible_host }}/etc/kubernetes/admin.conf
     dest: "{{ kube_config_path }}"
     owner: "{{ kube_user }}"
     group: "{{ kube_user }}"
-    when: default_config
+  when: default_config
 
 - name: Create new user kubeconfig on external machine
   command: kubectl config set-credentials cluster-admin --client-certificate="{{ certificate_path }}" --client-key="{{ key_path }}" --embed-certs=true
