@@ -5,7 +5,7 @@
     --node-name="{{ host_name }}" \
     --pod-network-cidr="{{ pod_network_cidr }}"
 #need to change variables
-  tags: cluster-init
+  tags: adm-init
 
 - name: Generate join command
   command: kubeadm token create --print-join-command
@@ -21,4 +21,4 @@
 - name: Fetch join command back to local host
   fetch:
     src: /tmp/join-command.sh
-    dest: /tmp/join-command.sh
+    dest: /tmp
