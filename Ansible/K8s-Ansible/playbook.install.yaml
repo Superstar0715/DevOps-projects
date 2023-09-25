@@ -83,7 +83,7 @@
       path: ~/ansible.csr
       privatekey_path: ~/ansible.pem
       common_name: asutliff
-      organization_name: system:masters
+      organization_name: system:authenticated
   tags: csr
 
 - hosts: controlplane_nodes #figure out how to limit this to only a single host
@@ -109,7 +109,7 @@
         usages:
         - digital signature
         - key encipherment
-        - server auth 
+        - client auth
         request:
           "{{ ansible_csr.stdout }}"
       EOF
@@ -117,7 +117,7 @@
     command: kubectl certificate approve asutliff
   - name: Output Signed CSR Certificate
     shell: |
-      "kubectl get csr  -o yaml | grep -e '^    certificate:' | sed 's/    certificate://'"
+      kubectl get csr asutliff -o yaml | grep -e '^    certificate:' | sed 's/    certificate://' | base64 --decode
     register: signed_cert
   - name: Copy Signed CSR Certificate to Controller
     fetch:
