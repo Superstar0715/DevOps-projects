@@ -77,7 +77,7 @@
   tasks:
   - name: Generate an OpenSSL private key with the default values (4096 bits, RSA)
     community.crypto.openssl_privatekey:
-      path: ~/ansible.pem
+      path: ~/ansible.key
   - name: Generate an OpenSSL Certificate Signing Request
     community.crypto.openssl_csr:
       path: ~/ansible.csr
@@ -136,7 +136,7 @@
     kube_user: "asutliff"
     kube_config_path: "/home/{{ kube_user }}/.kube/config"
     certificate_path: "/tmp/k8s-controlplane/ansible.crt"
-    key_path: "home/{{ kube_user }}/ansible.pem"
+    key_path: "/home/{{ kube_user }}/ansible.key"
     new_user_config: true
     default_config: false
   roles:
