@@ -81,10 +81,10 @@
   - name: Generate an OpenSSL Certificate Signing Request
     community.crypto.openssl_csr:
       path: ~/ansible.csr
-      privatekey_path: ~/ansible.pem
+      privatekey_path: ~/ansible.key
       common_name: asutliff
       organization_name: system:authenticated
-  tags: csr
+  tags: keygen
 
 - hosts: controlplane_nodes #figure out how to limit this to only a single host
   become_user: asutliff
@@ -127,6 +127,10 @@
     fetch:
       src: ansible.crt
       dest: /tmp
+  - name: Copy CA cert to Controller
+    fetch:
+      src: /etc/kubernetes/pki/ca.crt
+      dest: /tmp
   tags: csr
 
 - hosts: ansible_controller
@@ -136,7 +140,10 @@
     kube_user: "asutliff"
     kube_config_path: "/home/{{ kube_user }}/.kube/config"
     certificate_path: "/tmp/k8s-controlplane/ansible.crt"
+    ca_certificates_path: "/tmp/k8s-controlplane/etc/kubernetes/pki/ca.crt"
     key_path: "/home/{{ kube_user }}/ansible.key"
+    cluster_name: "local-cluster"
+    cluster_address: "https://k8s-controlplane:6443"
     new_user_config: true
     default_config: false
   roles:
