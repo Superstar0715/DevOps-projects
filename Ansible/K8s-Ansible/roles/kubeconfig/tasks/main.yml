@@ -23,6 +23,6 @@
 
 - name: Create new user kubeconfig on external machine
   shell: |
-    sudo kubectl config set-credentials cluster-admin --client-certificate="{{ certificate_path }}" --client-key="{{ key_path }}" --embed-certs=true
+    sudo kubectl config set-credentials {{ kube_user }} --client-certificate="{{ certificate_path }}" --client-key="{{ key_path }}" --embed-certs=true
   # also need to configure the cluster in the kubeconfig, and set the current context
   when: new_user_config
