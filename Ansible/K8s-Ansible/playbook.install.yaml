@@ -117,12 +117,16 @@
     command: kubectl certificate approve asutliff
   - name: Output Signed CSR Certificate
     shell: |
-      kubectl get csr asutliff -o yaml | grep -e '^    certificate:' | sed 's/    certificate://' | base64 --decode
+      kubectl get csr asutliff -o yaml | grep -e '^  certificate:' | sed 's/certificate://' | tr -d [:space:] | base64 --decode
     register: signed_cert
-  - name: Copy Signed CSR Certificate to Controller
-    fetch:
+  - name: Copy Signed CSR Certificate to master
+    copy:
       content: "{{ signed_cert.stdout }}"
       dest: ~/ansible.crt
+  - name: Copy Signed CSR Certificate to Controller
+    fetch:
+      src: ansible.crt
+      dest: /tmp
   tags: csr
 
 - hosts: ansible_controller
@@ -131,7 +135,7 @@
   vars:
     kube_user: "asutliff"
     kube_config_path: "/home/{{ kube_user }}/.kube/config"
-    certificate_path: "home/{{ kube_user }}/ansible.pem"
+    certificate_path: "/tmp/k8s-controlplane/ansible.crt"
     key_path: "home/{{ kube_user }}/ansible.pem"
     new_user_config: true
     default_config: false
