@@ -1,13 +1,6 @@
 ---
 # tasks file for cni
-- name: Install Flannel CNI Pluggin
-  become: true
-  become_user: "{{ kube_user }}"
-  command: kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
+- include: cilium.yaml
+  when: cilium
+- include: flannel.yaml
   when: flannel
-
-
-# other tasks for other CNI Plugins can be called in the main playbook by listing <name>: true in the vars
-#- name: Install Calico CNI Pluggin
-#  command: dummy command for calico
-#  when: calico
