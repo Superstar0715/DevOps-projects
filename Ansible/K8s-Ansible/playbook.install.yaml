@@ -50,14 +50,14 @@
   become: yes
   become_user: root
   vars:
-    pod_network_cidr: 10.244.0.0/16 # pod CIDR range for cluster init, change this to match your CNI pluggin CIDR configuration
+    pod_network_cidr: 10.0.0.0/8 # flannel: 10.244.0.0/16 # pod CIDR range for cluster init, change this to match your CNI pluggin CIDR configuration
     host_ip: "{{ ansible_default_ipv4.address }}"
     host_name: "{{ inventory_hostname }}"
     kube_user: "asutliff"
     kube_config_path: "/home/{{ kube_user }}/.kube/config"
     default_config: true
     new_user_config: false
-    flannel: true #set the name of the CNI plugin you want to use to true, currently supports only flannel
+    cilium: true #set the name of the CNI plugin you want to use to true, currently supports only flannel or cilium
   roles:
     - cluster_init
     - kubeconfig
