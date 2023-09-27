@@ -57,11 +57,9 @@
     kube_config_path: "/home/{{ kube_user }}/.kube/config"
     default_config: true
     new_user_config: false
-    cilium: true #set the name of the CNI plugin you want to use to true, currently supports only flannel or cilium
   roles:
     - cluster_init
     - kubeconfig
-    - cni
   tags: cluster-init
 
 - hosts: worker_nodes
@@ -70,6 +68,15 @@
   roles:
     - add_node
   tags: add-node
+
+- hosts: controlplane_nodes
+  become: yes
+  become_user: asutliff
+  vars:
+    cilium: true #set the name of the CNI plugin you want to use to true, currently supports only flannel or cilium
+    kube_user: "asutliff"
+  roles:
+    - cni
 
 - hosts: ansible_controller
   become: yes
@@ -148,6 +155,13 @@
     default_config: false
   roles:
     - kubeconfig
+
+- hosts: ansible_controller
+  tasks:
+  - name: Cleanup temp files
+    file:
+      path: /tmp/k8s-controlplane/
+      state: absent
 
 - hosts: ansible_controller
   become: true
