@@ -1,6 +1,6 @@
 ---
 # tasks file for cni
-- include: cilium.yaml
+- include_tasks: cilium.yaml
   when: cilium
-- include: flannel.yaml
+- include_tasks: flannel.yaml
   when: flannel
