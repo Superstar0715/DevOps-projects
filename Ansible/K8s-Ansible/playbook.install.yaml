@@ -7,8 +7,14 @@
       - 2379
       - 2380
       - 10250
-      - 10259
+      - 10259his
       - 10257
+      #networking?
+      - 8472 #udp
+      - 4240 #tcp
+      - 8472 #udp, egress
+      - 4240 #tcp, egress
+      - 53 #allow out to upstream router
     kube_hosts: "{{ ansible_all_ipv4_addresses | difference([hostvars[inventory_hostname].ansible_default_ipv4.address]) }}"
   tasks:
     - name: Create ufw_rules map
@@ -77,6 +83,7 @@
     kube_user: "asutliff"
   roles:
     - cni
+  tags: k8s-network
 
 - hosts: ansible_controller
   become: true

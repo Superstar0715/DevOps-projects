@@ -70,16 +70,16 @@
     certificate_path: "/tmp/k8s-controlplane/ansible.crt"
     ca_certificates_path: "/tmp/k8s-controlplane/etc/kubernetes/pki/ca.crt"
     key_path: "/home/{{ kube_user }}/ansible.key"
-    cluster_name: "local-cluster"
+    cluster_name: "kubernetes"
     cluster_address: "https://k8s-controlplane:6443"
     new_user_config: true
     default_config: false
   roles:
     - kubeconfig
 
-- hosts: ansible_controller
-  tasks:
-  - name: Cleanup temp files
-    file:
-      path: /tmp/k8s-controlplane/
-      state: absent
+# - hosts: ansible_controller
+#   tasks:
+#   - name: Cleanup temp files
+#     file:
+#       path: /tmp/k8s-controlplane/
+#       state: absent
