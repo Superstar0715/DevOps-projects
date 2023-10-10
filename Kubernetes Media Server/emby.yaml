@@ -98,3 +98,26 @@ spec:
     io.kompose.service: emby
 status:
   loadBalancer: {}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    ingress.kubernetes.io/ssl-redirect: "false"
+  name: mediaserver-ingress-public
+  namespace: mediaserver
+spec:
+  ingressClassName: public-ingress
+  rules:
+  - host: "andrewsutliff.com"
+    http:
+      paths:
+      - backend:
+          service:
+            name: emby
+            port:
+              number: 8096
+        path: /emby
+        pathType: Prefix
+

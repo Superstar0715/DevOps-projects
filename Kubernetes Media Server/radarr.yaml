@@ -96,6 +96,6 @@ spec:
           service:
             name: radarr
             port:
-              number: 8181
+              number: 7878
         path: /radarr
         pathType: Prefix
