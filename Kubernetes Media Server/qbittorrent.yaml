@@ -1,0 +1,131 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert --volumes hostPath
+    kompose.version: 1.28.0 (c4137012e)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: qbittorrent
+  name: qbittorrent
+  namespace: mediaserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: qbittorrent
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert --volumes hostPath
+        kompose.version: 1.28.0 (c4137012e)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/dockermediaserver-default: "true"
+        io.kompose.service: qbittorrent
+    spec:
+      containers:
+        - env:
+            - name: K8S_CLUSTER
+              value: "yes"
+            - name: K8S_POD_CIDR
+              value: 10.1.0.0/16
+            - name: K8S_SVC_CIDR
+              value: 10.152.183.0/24
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: LAN_CIDR
+              value: 192.168.1.0/24
+            - name: NAME_SERVERS
+              value: 1.1.1.1,1.0.0.1
+            - name: WEBUI_PORT_ENV
+              value: "8080"
+          image: linuxserver/qbittorrent
+          securityContext:
+            privileged: true
+            capabilities:
+              add:
+              - NET_ADMIN
+          name: qbittorrent
+          ports:
+            - containerPort: 8080
+            - containerPort: 6881
+            - containerPort: 6881
+              protocol: UDP
+          resources: {}
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - mountPath: /config
+              name: qbittorrentvpn-hostpath0
+            - mountPath: /downloads
+              name: qbittorrentvpn-hostpath1
+            - mountPath: /etc/timezone
+              name: qbittorrentvpn-hostpath2
+              readOnly: true
+      restartPolicy: Always
+      volumes:
+        - hostPath:
+            path: /srv/Configs/QBittorrentVPN
+          name: qbittorrentvpn-hostpath0
+        - hostPath:
+            path: /srv/Torrents
+          name: qbittorrentvpn-hostpath1
+        - hostPath:
+            path: /etc/timezone
+          name: qbittorrentvpn-hostpath2
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert --volumes hostPath
+    kompose.version: 1.28.0 (c4137012e)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: qbittorrent
+  name: qbittorrent
+  namespace: mediaserver
+spec:
+  ports:
+    - name: "8080"
+      port: 8080
+      targetPort: 8080
+    - name: "6881"
+      port: 6881
+      targetPort: 8999
+    - name: 6881-udp
+      port: 6881
+      protocol: UDP
+      targetPort: 6881
+  selector:
+    io.kompose.service: qbittorrent
+status:
+  loadBalancer: {}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    ingress.kubernetes.io/ssl-redirect: "false"
+  name: qbittorrent-ingress-private
+  namespace: mediaserver
+spec:
+  ingressClassName: private-ingress
+  rules:
+  - host: "local.andrewsutliff.com"
+    http:
+      paths:
+      - backend:
+          service:
+            name: qbittorrent
+            port:
+              number: 8080
+        path: /qbittorrent
+        pathType: Prefix
