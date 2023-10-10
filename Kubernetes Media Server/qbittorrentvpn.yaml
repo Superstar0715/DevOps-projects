@@ -45,7 +45,7 @@ spec:
                 #            - name: VPN_ENABLED
                 #              value: "yes"
                 #            - name: VPN_PASSWORD
-                #              value: "IU#@YUR$)*hNUCN(34"
+                #              value: "
                 #            - name: VPN_USERNAME
                 #              value: "dres2dogs@gmail.com"
             - name: WEBUI_PORT_ENV
@@ -113,3 +113,25 @@ spec:
     io.kompose.service: qbittorrentvpn
 status:
   loadBalancer: {}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    ingress.kubernetes.io/ssl-redirect: "false"
+  name: mediaserver-ingress-private
+  namespace: mediaserver
+spec:
+  ingressClassName: private-ingress
+  rules:
+  - host: "local.andrewsutliff.com"
+    http:
+      paths:
+      - backend:
+          service:
+            name: qbittorrent
+            port:
+              number: 8181
+        path: /qbittorrent
+        pathType: Prefix
