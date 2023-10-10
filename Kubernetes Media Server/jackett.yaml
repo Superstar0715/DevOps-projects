@@ -77,7 +77,7 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
     ingress.kubernetes.io/ssl-redirect: "false"
-  name: mediaserver-ingress-private
+  name: qbittorrent-ingress-private
   namespace: mediaserver
 spec:
   ingressClassName: private-ingress

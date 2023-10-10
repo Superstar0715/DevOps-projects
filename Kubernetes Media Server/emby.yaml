@@ -105,7 +105,7 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
     ingress.kubernetes.io/ssl-redirect: "false"
-  name: mediaserver-ingress-public
+  name: emby-ingress-public
   namespace: mediaserver
 spec:
   ingressClassName: public-ingress
