@@ -79,3 +79,25 @@ spec:
     io.kompose.service: sabnzbd
 status:
   loadBalancer: {}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    ingress.kubernetes.io/ssl-redirect: "false"
+  name: mediaserver-ingress-private
+  namespace: mediaserver
+spec:
+  ingressClassName: private-ingress
+  rules:
+  - host: "local.andrewsutliff.com"
+    http:
+      paths:
+      - backend:
+          service:
+            name: sabnzbd
+            port:
+              number: 8181
+        path: /sabnzbd
+        pathType: Prefix

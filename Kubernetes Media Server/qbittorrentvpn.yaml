@@ -6,14 +6,14 @@ metadata:
     kompose.version: 1.28.0 (c4137012e)
   creationTimestamp: null
   labels:
-    io.kompose.service: qbittorrentvpn
-  name: qbittorrentvpn
+    io.kompose.service: qbittorrent
+  name: qbittorrent
   namespace: mediaserver
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: qbittorrentvpn
+      io.kompose.service: qbittorrent
   strategy:
     type: Recreate
   template:
@@ -24,7 +24,7 @@ spec:
       creationTimestamp: null
       labels:
         io.kompose.network/dockermediaserver-default: "true"
-        io.kompose.service: qbittorrentvpn
+        io.kompose.service: qbittorrent
     spec:
       containers:
         - env:
@@ -42,12 +42,6 @@ spec:
               value: 192.168.1.0/24
             - name: NAME_SERVERS
               value: 1.1.1.1,1.0.0.1
-                #            - name: VPN_ENABLED
-                #              value: "yes"
-                #            - name: VPN_PASSWORD
-                #              value: "IU#@YUR$)*hNUCN(34"
-                #            - name: VPN_USERNAME
-                #              value: "dres2dogs@gmail.com"
             - name: WEBUI_PORT_ENV
               value: "8080"
           image: linuxserver/qbittorrent
@@ -56,7 +50,7 @@ spec:
             capabilities:
               add:
               - NET_ADMIN
-          name: qbittorrentvpn
+          name: qbittorrent
           ports:
             - containerPort: 8080
             - containerPort: 6881
@@ -94,8 +88,8 @@ metadata:
     kompose.version: 1.28.0 (c4137012e)
   creationTimestamp: null
   labels:
-    io.kompose.service: qbittorrentvpn
-  name: qbittorrentvpn
+    io.kompose.service: qbittorrent
+  name: qbittorrent
   namespace: mediaserver
 spec:
   ports:
@@ -110,6 +104,28 @@ spec:
       protocol: UDP
       targetPort: 6881
   selector:
-    io.kompose.service: qbittorrentvpn
+    io.kompose.service: qbittorrent
 status:
   loadBalancer: {}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    ingress.kubernetes.io/ssl-redirect: "false"
+  name: mediaserver-ingress-private
+  namespace: mediaserver
+spec:
+  ingressClassName: private-ingress
+  rules:
+  - host: "local.andrewsutliff.com"
+    http:
+      paths:
+      - backend:
+          service:
+            name: qbittorrent
+            port:
+              number: 8080
+        path: /qbittorrent
+        pathType: Prefix

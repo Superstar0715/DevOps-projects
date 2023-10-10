@@ -48,3 +48,18 @@
 - name: Install Celium
   shell: |
     cilium install --version 1.14.2
+
+
+# much more debugging needs to be done, for starters to use L2 aware LB, you need to use these options when installing 
+# https://docs.cilium.io/en/stable/network/l2-announcements/#prerequisites
+
+$ helm upgrade cilium cilium/cilium --version 1.14.2 \
+   --namespace kube-system \
+   --set l2announcements.enabled=true \
+   --set k8sClientRateLimit.qps=${QPS} \
+   --set k8sClientRateLimit.burst=${BURST} \
+   --set kubeProxyReplacement=true \
+   --set k8sServiceHost=${API_SERVER_IP} \
+   --set k8sServicePort=${API_SERVER_PORT} #default 6443\
+   --set devices=enp+ \
+   --set externalIPs.enabled=true 
