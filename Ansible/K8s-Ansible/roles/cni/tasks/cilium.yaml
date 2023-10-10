@@ -63,5 +63,3 @@ $ helm upgrade cilium cilium/cilium --version 1.14.2 \
    --set k8sServicePort=${API_SERVER_PORT} #default 6443\
    --set devices=enp+ \
    --set externalIPs.enabled=true 
-
-   may need to also set cilium config set enable-bgp-control-plane true
