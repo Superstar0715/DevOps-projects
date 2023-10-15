@@ -108,7 +108,7 @@ metadata:
   name: emby-ingress-public
   namespace: mediaserver
 spec:
-  ingressClassName: public-ingress
+  ingressClassName: public-nginx
   rules:
   - host: "andrewsutliff.com"
     http:
