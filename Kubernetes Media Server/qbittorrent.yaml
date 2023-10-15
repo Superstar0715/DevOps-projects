@@ -117,7 +117,7 @@ metadata:
   name: qbittorrent-ingress-private
   namespace: mediaserver
 spec:
-  ingressClassName: private-ingress
+  ingressClassName: private-nginx
   rules:
   - host: "local.andrewsutliff.com"
     http:
