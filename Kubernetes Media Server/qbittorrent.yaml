@@ -27,6 +27,33 @@ spec:
         io.kompose.service: qbittorrent
     spec:
       containers:
+        - name: gluetun
+          image: ghcr.io/qdm12/gluetun
+          imagePullPolicy: Always
+          securityContext:
+            capabilities:
+              add: 
+                - "NET_ADMIN"
+          env:
+            - name: TZ
+              value: America/New_York
+            - name: VPN_TYPE
+              value: "openvpn"
+            - name: VPN_SERVICE_PROVIDER
+              value: "nordvpn"
+            - name: OPENVPN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: vpn-secret
+                  key: username
+            - name: OPENVPN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: vpn-secret
+                  key: password
+          volumeMounts:
+            - mountPath: /gluetun
+              name: qbittorrentvpn-hostpath3
         - env:
             - name: K8S_CLUSTER
               value: "yes"
@@ -45,11 +72,11 @@ spec:
             - name: WEBUI_PORT_ENV
               value: "8080"
           image: linuxserver/qbittorrent
-          securityContext:
-            privileged: true
-            capabilities:
-              add:
-              - NET_ADMIN
+            # securityContext:
+            # privileged: true
+              #            capabilities:
+              # add:
+              #  - "NET_ADMIN"
           name: qbittorrent
           ports:
             - containerPort: 8080
@@ -57,8 +84,6 @@ spec:
             - containerPort: 6881
               protocol: UDP
           resources: {}
-          securityContext:
-            privileged: true
           volumeMounts:
             - mountPath: /config
               name: qbittorrentvpn-hostpath0
@@ -72,6 +97,9 @@ spec:
         - hostPath:
             path: /srv/Configs/QBittorrentVPN
           name: qbittorrentvpn-hostpath0
+        - hostPath:
+            path: /srv/Configs/gluetun
+          name: qbittorrentvpn-hostpath3
         - hostPath:
             path: /srv/Torrents
           name: qbittorrentvpn-hostpath1
