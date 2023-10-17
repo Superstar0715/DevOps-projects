@@ -147,7 +147,7 @@ metadata:
 spec:
   ingressClassName: private-nginx
   rules:
-  - host: "local.andrewsutliff.com"
+  - host: "qbittorrent.andrewsutliff.com"
     http:
       paths:
       - backend:
@@ -155,5 +155,5 @@ spec:
             name: qbittorrent
             port:
               number: 8080
-        path: /qbittorrent
+        path: /
         pathType: Prefix

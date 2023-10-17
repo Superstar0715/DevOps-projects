@@ -82,7 +82,7 @@ metadata:
 spec:
   ingressClassName: private-nginx
   rules:
-  - host: "local.andrewsutliff.com"
+  - host: "jackett.andrewsutliff.com"
     http:
       paths:
       - backend:
@@ -90,6 +90,6 @@ spec:
             name: jackett
             port:
               number: 9117
-        path: /jackett
+        path: /
         pathType: Prefix
 

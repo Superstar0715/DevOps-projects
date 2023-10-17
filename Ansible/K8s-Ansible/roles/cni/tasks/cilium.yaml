@@ -47,19 +47,44 @@
 
 - name: Install Celium
   shell: |
-    cilium install --version 1.14.2
+    cilium install --version 1.14.2 \
+    --namespace kube-system \
+    --set l2announcements.enabled=true \
+    --set l2announcements.leaseDuration=25s
+    --set l2announcements.leaseRenewalDeadline=15s \
+    --set l2announcements.leaseRetryPeriod=8s \
+    --set k8sClientRateLimit.qps=3000 \
+    --set k8sClientRateLimit.burst=20000 \
+    --set kubeProxyReplacement=true \
+    --set devices=enp+ \
+    --set externalIPs.enabled=true 
 
 
 # much more debugging needs to be done, for starters to use L2 aware LB, you need to use these options when installing 
 # https://docs.cilium.io/en/stable/network/l2-announcements/#prerequisites
 
-$ helm upgrade cilium cilium/cilium --version 1.14.2 \
-   --namespace kube-system \
-   --set l2announcements.enabled=true \
-   --set k8sClientRateLimit.qps=${QPS} \
-   --set k8sClientRateLimit.burst=${BURST} \
-   --set kubeProxyReplacement=true \
-   --set k8sServiceHost=${API_SERVER_IP} \
-   --set k8sServicePort=${API_SERVER_PORT} #default 6443\
-   --set devices=enp+ \
-   --set externalIPs.enabled=true 
+# $ helm upgrade cilium cilium/cilium --version 1.14.2 \
+# --namespace kube-system \
+# --set l2announcements.enabled=true \
+# --set l2announcements.leaseDuration=25s
+# --set l2announcements.leaseRenewalDeadline=15s \
+# --set l2announcements.leaseRetryPeriod=8s \
+# --set k8sClientRateLimit.qps=3000 \
+# --set k8sClientRateLimit.burst=20000 \
+# --set kubeProxyReplacement=true \
+# --set devices=enp+ \
+# --set externalIPs.enabled=true 
+
+# --set k8sServiceHost=192.168.1.31 \
+# --set k8sServicePort=6443 \
+#default lease duration is 15s, renew deadline is 5s, increased both by 10
+# level=info msg="  --l2-announcements-lease-duration='15s'" subsys=daemon
+# level=info msg="  --l2-announcements-renew-deadline='5s'" subsys=daemon
+# level=info msg="  --l2-announcements-retry-period='2s'" subsys=daemon
+
+# TODO - Make a check if cilium is already running, if so use cilium config set key value, values are differently named
+# enable-l2-announcements                           true
+# k8s-client-qps                                    3000
+# k8s-client-burst                                  20000
+# kube-proxy-replacement                            strict
+# devices                                           enp+
