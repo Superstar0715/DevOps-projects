@@ -110,7 +110,7 @@ metadata:
 spec:
   ingressClassName: public-nginx
   rules:
-  - host: "andrewsutliff.com"
+  - host: "emby.andrewsutliff.com"
     http:
       paths:
       - backend:
@@ -118,6 +118,6 @@ spec:
             name: emby
             port:
               number: 8096
-        path: /emby
+        path: /
         pathType: Prefix
 

@@ -89,7 +89,7 @@ metadata:
 spec:
   ingressClassName: private-nginx
   rules:
-  - host: "local.andrewsutliff.com"
+  - host: "sonarr.andrewsutliff.com"
     http:
       paths:
       - backend:
@@ -97,5 +97,5 @@ spec:
             name: sonarr
             port:
               number: 8989
-        path: /sonarr
+        path: /
         pathType: Prefix

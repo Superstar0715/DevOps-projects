@@ -91,7 +91,7 @@ metadata:
 spec:
   ingressClassName: private-nginx
   rules:
-  - host: "local.andrewsutliff.com"
+  - host: "sabnzbd.andrewsutliff.com"
     http:
       paths:
       - backend:
@@ -99,5 +99,5 @@ spec:
             name: sabnzbd
             port:
               number: 8181
-        path: /sabnzbd
+        path: /
         pathType: Prefix
