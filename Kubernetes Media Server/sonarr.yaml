@@ -83,7 +83,6 @@ kind: Ingress
 metadata:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
-    ingress.kubernetes.io/ssl-redirect: "false"
     cert-manager.io/cluster-issuer: "cloudflare-issuer"
   name: sonarr-ingress-private
   namespace: mediaserver
