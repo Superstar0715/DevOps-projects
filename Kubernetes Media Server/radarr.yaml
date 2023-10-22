@@ -83,11 +83,15 @@ kind: Ingress
 metadata:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
-    ingress.kubernetes.io/ssl-redirect: "false"
+    cert-manager.io/cluster-issuer: "cloudflare-issuer"
   name: radarr-ingress-private
   namespace: mediaserver
 spec:
   ingressClassName: private-nginx
+  tls:
+  - hosts:
+      - radarr.andrewsutliff.com
+    secretName: radarr-http-tls
   rules:
   - host: "radarr.andrewsutliff.com"
     http:

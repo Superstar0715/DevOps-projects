@@ -141,11 +141,15 @@ kind: Ingress
 metadata:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
-    ingress.kubernetes.io/ssl-redirect: "false"
+    cert-manager.io/cluster-issuer: "cloudflare-issuer"
   name: qbittorrent-ingress-private
   namespace: mediaserver
 spec:
   ingressClassName: private-nginx
+  tls:
+  - hosts:
+      - qbittorrent.andrewsutliff.com
+    secretName: qbittorrent-http-tls
   rules:
   - host: "qbittorrent.andrewsutliff.com"
     http:

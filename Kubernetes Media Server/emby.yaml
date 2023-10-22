@@ -104,11 +104,15 @@ kind: Ingress
 metadata:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
-    ingress.kubernetes.io/ssl-redirect: "false"
+    cert-manager.io/cluster-issuer: "cloudflare-issuer"
   name: emby-ingress-public
   namespace: mediaserver
 spec:
   ingressClassName: public-nginx
+  tls:
+  - hosts:
+      - emby.andrewsutliff.com
+    secretName: emby-http-tls
   rules:
   - host: "emby.andrewsutliff.com"
     http:
