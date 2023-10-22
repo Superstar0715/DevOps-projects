@@ -86,10 +86,15 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
     ingress.kubernetes.io/ssl-redirect: "false"
+    cert-manager.io/cluster-issuer: "cloudflare-issuer"
   name: sabnzbd-ingress-private
   namespace: mediaserver
 spec:
   ingressClassName: private-nginx
+  tls:
+  - hosts:
+      - sabnzbd.andrewsutliff.com
+    secretName: sabnzdb-http-tls
   rules:
   - host: "sabnzbd.andrewsutliff.com"
     http:

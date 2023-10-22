@@ -84,10 +84,15 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
     ingress.kubernetes.io/ssl-redirect: "false"
+    cert-manager.io/cluster-issuer: "cloudflare-issuer"
   name: sonarr-ingress-private
   namespace: mediaserver
 spec:
   ingressClassName: private-nginx
+  tls:
+  - hosts:
+      - sonarr.andrewsutliff.com
+    secretName: sonarr-http-tls
   rules:
   - host: "sonarr.andrewsutliff.com"
     http:

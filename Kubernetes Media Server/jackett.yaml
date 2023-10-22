@@ -77,10 +77,15 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
     ingress.kubernetes.io/ssl-redirect: "false"
+    cert-manager.io/cluster-issuer: "cloudflare-issuer"
   name: jackett-ingress-private
   namespace: mediaserver
 spec:
   ingressClassName: private-nginx
+  tls:
+  - hosts:
+      - jackett.andrewsutliff.com
+    secretName: jackett-http-tls
   rules:
   - host: "jackett.andrewsutliff.com"
     http:
