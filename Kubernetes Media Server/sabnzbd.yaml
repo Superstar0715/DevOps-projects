@@ -45,7 +45,7 @@ spec:
               name: sabnzbd-nfs1
       restartPolicy: Always
       volumes:
-        - hostPath:
+        - persistentVolumeClaim:
             claimName: sabnzdb-longhorn
           name: sabnzbd-conf
         - nfs:
