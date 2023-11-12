@@ -111,6 +111,19 @@ spec:
 status: {}
 ---
 apiVersion: v1
+kind: persistentVolumeClaim
+metadata:
+  name: qb-longhorn
+  namespace: mediaserver
+spec:
+  storageClassName: longhorn
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500Mi
+---
+apiVersion: v1
 kind: Service
 metadata:
   annotations:
