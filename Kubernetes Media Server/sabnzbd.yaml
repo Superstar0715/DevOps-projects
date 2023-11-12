@@ -45,7 +45,7 @@ spec:
               name: sabnzbd-nfs1
       restartPolicy: Always
       volumes:
-        - hostPath:
+        - persistentVolumeClaim:
             claimName: sabnzdb-longhorn
           name: sabnzbd-conf
         - nfs:
@@ -59,6 +59,19 @@ spec:
             path: /mnt/Main/kubernetes/Downloads/Incomplete
           name: sabnzbd-nfs1
 status: {}
+---
+apiVersion: v1
+kind: persistentVolumeClaim
+metadata:
+  name: sabnzdb-longhorn
+  namespace: mediaserver
+spec:
+  storageClassName: longhorn
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500Mi
 ---
 apiVersion: v1
 kind: Service
