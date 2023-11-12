@@ -39,22 +39,26 @@ spec:
           resources: {}
           volumeMounts:
             - mountPath: /config
-              name: radarr-hostpath0
+              name: radarr-conf
             - mountPath: /movies
-              name: radarr-hostpath1
+              name: radarr-nfs0
             - mountPath: /downloads
-              name: radarr-hostpath2
+              name: radarr-nfs1
       restartPolicy: Always
       volumes:
-        - hostPath:
-            path: /srv/Configs/Radarr
-          name: radarr-hostpath0
-        - hostPath:
-            path: /srv/Movies
-          name: radarr-hostpath1
-        - hostPath:
-            path: /srv/Torrents
-          name: radarr-hostpath2
+        - persistentVolumeClaim:
+            claimName: radarr-longhorn
+          name: radarr-conf
+        - nfs:
+            server: truenas
+            path: /mnt/Main/kubernetes/Movies
+            readonly: true
+          name: radarr-nfs0
+        - nfs:
+            server: truenas
+            path: /mnt/Main/kubernetes/Torrents
+            readonly: true
+          name: radarr-nfs1
 status: {}
 ---
 apiVersion: v1

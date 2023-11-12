@@ -39,22 +39,26 @@ spec:
           resources: {}
           volumeMounts:
             - mountPath: /config
-              name: sonarr-hostpath0
+              name: sonarr-conf
             - mountPath: /tv
-              name: sonarr-hostpath1
+              name: sonarr-nfs0
             - mountPath: /downloads
-              name: sonarr-hostpath2
+              name: sonarr-nfs1
       restartPolicy: Always
       volumes:
-        - hostPath:
-            path: /srv/Configs/Sonarr
-          name: sonarr-hostpath0
-        - hostPath:
-            path: /srv/TV
-          name: sonarr-hostpath1
-        - hostPath:
-            path: /srv/Torrents
-          name: sonarr-hostpath2
+        - persistentVolumeClaim:
+            claimName: sonarr-longhorn
+          name: sonarr-conf
+        - nfs:
+            server: truenas
+            path: /mnt/Main/kubernetes/TV
+            readonly: true
+          name: sonarr-nfs0
+        - nfs:
+            server: truenas
+            path: /mnt/Main/kubernetes/Torrents
+            readonly: true
+          name: sonarr-nfs1
 status: {}
 ---
 apiVersion: v1

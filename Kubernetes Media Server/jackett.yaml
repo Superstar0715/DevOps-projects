@@ -37,17 +37,19 @@ spec:
           resources: {}
           volumeMounts:
             - mountPath: /config
-              name: jackett-hostpath0
+              name: jackett-conf
             - mountPath: /downloads
-              name: jackett-hostpath1
+              name: jackett-nfs0
       restartPolicy: Always
       volumes:
-        - hostPath:
-            path: /srv/Configs/Jackett
-          name: jackett-hostpath0
-        - hostPath:
-            path: /srv/Torrents
-          name: jackett-hostpath1
+        - persistentVolumeClaim:
+            claimName: jackett-longhorn
+          name: jackett-conf
+        - nfs:
+            server: truenas
+            readOnly: true 
+            path: /mnt/Main/kubernetes/Torrents
+          name: emby-nfs0
 status: {}
 ---
 apiVersion: v1

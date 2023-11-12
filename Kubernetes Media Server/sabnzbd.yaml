@@ -38,22 +38,26 @@ spec:
           resources: {}
           volumeMounts:
             - mountPath: /config
-              name: sabnzbd-hostpath0
+              name: sabnzbd-conf
             - mountPath: /downloads
-              name: sabnzbd-hostpath1
+              name: sabnzbd-nfs0
             - mountPath: /incomplete-downloads
-              name: sabnzbd-hostpath2
+              name: sabnzbd-nfs1
       restartPolicy: Always
       volumes:
         - hostPath:
-            path: /srv/Configs/Sabnzbd
-          name: sabnzbd-hostpath0
-        - hostPath:
-            path: /srv/Downloads
-          name: sabnzbd-hostpath1
-        - hostPath:
-            path: /srv/Downloads/Incomplete
-          name: sabnzbd-hostpath2
+            claimName: sabnzdb-longhorn
+          name: sabnzbd-conf
+        - nfs:
+            readonly: false
+            server: truenas
+            path: /mnt/Main/kubernetes/Downloads
+          name: sabnzbb-nfs0
+        - nfs:
+            server: truenas
+            readonly: false
+            path: /mnt/Main/kubernetes/Downloads/Incomplete
+          name: sabnzbd-nfs1
 status: {}
 ---
 apiVersion: v1

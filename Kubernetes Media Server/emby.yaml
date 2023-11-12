@@ -47,27 +47,33 @@ spec:
           resources: {}
           volumeMounts:
             - mountPath: /config
-              name: emby-hostpath0
+              name: emby-longhorn
             - mountPath: /data/tvshows
-              name: emby-hostpath1
+              name: emby-nfs0
             - mountPath: /data/movies
-              name: emby-hostpath2
+              name: emby-nfs1
             - mountPath: /data/XXX
-              name: emby-hostpath3
+              name: emby-nfs2
       restartPolicy: Always
       volumes:
-        - hostPath:
-            path: /srv/Configs/Emby
-          name: emby-hostpath0
-        - hostPath:
-            path: /srv/TV
-          name: emby-hostpath1
-        - hostPath:
-            path: /srv/Movies
-          name: emby-hostpath2
-        - hostPath:
-            path: /srv/XXX
-          name: emby-hostpath3
+        - persistentVolumeClaim:
+            claimName: emby-longhorn
+          name: emby-conf
+        - nfs:
+            server: truenas
+            readOnly: true 
+            path: /mnt/Main/kubernetes/TV
+          name: emby-nfs0
+        - nfs:
+            server: truenas
+            readOnly: true 
+            path: /mnt/Main/kubernetes/Movies
+          name: emby-nfs1
+        - nfs:
+            server: truenas
+            readOnly: true
+            path: /mnt/Main/kubernetes/XXX
+          name: emby-nfs2
 status: {}
 ---
 apiVersion: v1

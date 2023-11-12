@@ -53,7 +53,7 @@ spec:
                   key: password
           volumeMounts:
             - mountPath: /gluetun
-              name: qbittorrentvpn-hostpath3
+              name: gluetun-conf
         - env:
             - name: K8S_CLUSTER
               value: "yes"
@@ -86,26 +86,28 @@ spec:
           resources: {}
           volumeMounts:
             - mountPath: /config
-              name: qbittorrentvpn-hostpath0
+              name: qb-conf
             - mountPath: /downloads
-              name: qbittorrentvpn-hostpath1
+              name: qb-nfs0
             - mountPath: /etc/timezone
-              name: qbittorrentvpn-hostpath2
+              name: qbittorrentvpn-hostpath
               readOnly: true
       restartPolicy: Always
       volumes:
-        - hostPath:
-            path: /srv/Configs/QBittorrentVPN
-          name: qbittorrentvpn-hostpath0
-        - hostPath:
-            path: /srv/Configs/gluetun
-          name: qbittorrentvpn-hostpath3
-        - hostPath:
-            path: /srv/Torrents
-          name: qbittorrentvpn-hostpath1
+        - persistentVolumeClaim:
+            claimName: qb-longhorn
+          name: qb-conf
+        - nfs:
+            server: truenas
+            readOnly: false
+            path: /mnt/Main/kubernetes/Torrents
+          name: qb-nfs0
+        - persistentVolumeClaim:
+            claimName: gluetun-longhorn
+          name: gluetun-conf
         - hostPath:
             path: /etc/timezone
-          name: qbittorrentvpn-hostpath2
+          name: qbittorrentvpn-hostpath
 status: {}
 ---
 apiVersion: v1
