@@ -47,7 +47,7 @@ spec:
           resources: {}
           volumeMounts:
             - mountPath: /config
-              name: emby-longhorn
+              name: emby-conf
             - mountPath: /data/tvshows
               name: emby-nfs0
             - mountPath: /data/movies
