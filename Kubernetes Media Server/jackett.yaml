@@ -53,7 +53,7 @@ spec:
 status: {}
 ---
 apiVersion: v1
-kind: persistentVolumeClaim
+kind: PersistentVolumeClaim
 metadata:
   name: jackett-longhorn
 spec:

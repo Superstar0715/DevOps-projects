@@ -61,7 +61,7 @@ spec:
 status: {}
 ---
 apiVersion: v1
-kind: persistentVolumeClaim
+kind: PersistentVolumeClaim
 metadata:
   name: sabnzdb-longhorn
 spec:

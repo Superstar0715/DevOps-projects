@@ -62,7 +62,7 @@ spec:
 status: {}
 ---
 apiVersion: v1
-kind: persistentVolumeClaim
+kind: PersistentVolumeClaim
 metadata:
   name: sonarr-longhorn
 spec:
