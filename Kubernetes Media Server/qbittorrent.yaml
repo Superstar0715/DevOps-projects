@@ -113,6 +113,18 @@ status: {}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
+  name: gluetun-longhorn
+spec:
+  storageClassName: longhorn
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500Mi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
   name: qb-longhorn
 spec:
   storageClassName: longhorn

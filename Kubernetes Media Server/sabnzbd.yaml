@@ -52,7 +52,7 @@ spec:
             readonly: false
             server: truenas
             path: /mnt/Main/kubernetes/Downloads
-          name: sabnzbb-nfs0
+          name: sabnzbd-nfs0
         - nfs:
             server: truenas
             readonly: false
