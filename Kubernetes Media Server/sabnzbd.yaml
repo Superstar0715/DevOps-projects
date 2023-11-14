@@ -50,11 +50,11 @@ spec:
           name: sabnzbd-conf
         - nfs:
             readonly: false
-            server: truenas
+            server: 192.168.1.19
             path: /mnt/Main/kubernetes/Downloads
           name: sabnzbd-nfs0
         - nfs:
-            server: truenas
+            server: 192.168.1.19
             readonly: false
             path: /mnt/Main/kubernetes/Downloads/Incomplete
           name: sabnzbd-nfs1

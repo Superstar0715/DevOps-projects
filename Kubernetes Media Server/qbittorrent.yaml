@@ -98,7 +98,7 @@ spec:
             claimName: qb-longhorn
           name: qb-conf
         - nfs:
-            server: truenas
+            server: 192.168.1.19
             readOnly: false
             path: /mnt/Main/kubernetes/Torrents
           name: qb-nfs0
