@@ -27,6 +27,9 @@ spec:
         io.kompose.network/dockermediaserver-default: "true"
         io.kompose.service: emby
     spec:
+      securityContext:
+        runAsUser: 3001
+        runAsGroup: 3001
       containers:
         - env:
           # - name: GID
