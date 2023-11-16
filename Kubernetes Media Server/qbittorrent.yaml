@@ -27,34 +27,19 @@ spec:
         io.kompose.service: qbittorrent
     spec:
       containers:
-        - name: gluetun
-          image: ghcr.io/qdm12/gluetun
-          imagePullPolicy: Always
-          securityContext:
-            capabilities:
-              add: 
-                - "NET_ADMIN"
-          env:
-            - name: TZ
-              value: America/New_York
-            - name: VPN_TYPE
-              value: "openvpn"
-            - name: VPN_SERVICE_PROVIDER
-              value: "nordvpn"
-            - name: OPENVPN_USER
+        - env:
+            - name: VPN_ENABLED
+              value: yes
+            - name: VPN_USERNAME
               valueFrom:
                 secretKeyRef:
                   name: vpn-secret
                   key: username
-            - name: OPENVPN_PASSWORD
+            - name: VPN_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: vpn-secret
                   key: password
-          volumeMounts:
-            - mountPath: /gluetun
-              name: gluetun-conf
-        - env:
             - name: K8S_CLUSTER
               value: "yes"
             - name: K8S_POD_CIDR
@@ -102,9 +87,6 @@ spec:
             readOnly: false
             path: /mnt/Main/kubernetes/Torrents
           name: qb-nfs0
-        - persistentVolumeClaim:
-            claimName: gluetun-longhorn
-          name: gluetun-conf
         - hostPath:
             path: /etc/timezone
           name: qbittorrentvpn-hostpath
