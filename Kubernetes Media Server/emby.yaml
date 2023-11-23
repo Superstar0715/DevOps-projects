@@ -48,11 +48,14 @@ spec:
           volumeMounts:
             - mountPath: /config
               name: emby-conf
-            - mountPath: /data/tvshows
+            - mountPath: /data
+              subPath: tv
               name: emby-nfs0
-            - mountPath: /data/movies
+            - mountPath: /data
+              subPath: movies
               name: emby-nfs1
-            - mountPath: /data/XXX
+            - mountPath: /data
+              subPath: xxx
               name: emby-nfs2
       restartPolicy: Always
       volumes:
@@ -62,17 +65,17 @@ spec:
         - nfs:
             server: 192.168.1.19
             readOnly: true 
-            path: /mnt/Main/kubernetes/TV
+            path: /mnt/Main/kubernetes
           name: emby-nfs0
         - nfs:
             server: 192.168.1.19
             readOnly: true 
-            path: /mnt/Main/kubernetes/Movies
+            path: /mnt/Main/kubernetes
           name: emby-nfs1
         - nfs:
             server: 192.168.1.19
             readOnly: true
-            path: /mnt/Main/kubernetes/XXX
+            path: /mnt/Main/kubernetes
           name: emby-nfs2
 status: {}
 ---
