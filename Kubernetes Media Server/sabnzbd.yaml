@@ -49,13 +49,13 @@ spec:
             claimName: sabnzdb-longhorn
           name: sabnzbd-conf
         - nfs:
-            readonly: false
+            readOnly: false
             server: 192.168.1.19
             path: /mnt/Main/kubernetes/Downloads
           name: sabnzbd-nfs0
         - nfs:
             server: 192.168.1.19
-            readonly: false
+            readOnly: false
             path: /mnt/Main/kubernetes/Downloads/Incomplete
           name: sabnzbd-nfs1
 status: {}
