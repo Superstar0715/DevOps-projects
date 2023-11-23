@@ -61,17 +61,17 @@ spec:
           name: emby-conf
         - nfs:
             server: 192.168.1.19
-            readOnly: true 
+            readOnly: false
             path: /mnt/Main/kubernetes/TV
           name: emby-nfs0
         - nfs:
             server: 192.168.1.19
-            readOnly: true 
+            readOnly: false
             path: /mnt/Main/kubernetes/Movies
           name: emby-nfs1
         - nfs:
             server: 192.168.1.19
-            readOnly: true
+            readOnly: false
             path: /mnt/Main/kubernetes/XXX
           name: emby-nfs2
 status: {}
