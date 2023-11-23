@@ -29,7 +29,7 @@ spec:
       containers:
         - env:
             - name: VPN_ENABLED
-              value: yes
+              value: "yes"
             - name: VPN_USERNAME
               valueFrom:
                 secretKeyRef:
