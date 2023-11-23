@@ -58,7 +58,7 @@ spec:
               value: 1.1.1.1,1.0.0.1
             - name: WEBUI_PORT_ENV
               value: "8080"
-          image: tanchwa/qbittorrent-openvpn
+          image: tanchwa/qbittorrent-openvpn:v0.3.1
                   # securityContext:
             # privileged: true
               #            capabilities:
