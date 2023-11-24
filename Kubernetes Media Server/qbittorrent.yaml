@@ -74,9 +74,9 @@ spec:
           volumeMounts:
             - mountPath: /config
               name: qb-conf
-            - mountPath: /config/openvpn/se493.tcp.openvpn
+            - mountPath: /config/openvpn/se493.nordvpn.com.tcp443.ovpn
               name: test-openvpn
-            - mountPath: /config/openvpn/se493.udp.openvpn
+            - mountPath: /config/openvpn/se493.nordvpn.com.udp1194.ovpn
               name: test-openvpn-udp
             - mountPath: /downloads
               name: qb-nfs0
