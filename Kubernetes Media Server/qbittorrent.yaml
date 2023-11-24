@@ -74,9 +74,13 @@ spec:
           volumeMounts:
             - mountPath: /config
               name: qb-conf
+            - mountPath: /config/openvpn/se493.nordvpn.com.tcp443.ovpn
+              name: test-openvpn
+              subPath: se493.nordvpn.com.tcp443.ovpn
               readOnly: false
-            - mountPath: /config/openvpn
+            - mountPath: /config/openvpn/se493.nordvpn.com.udp1194.ovpn
               name: test-openvpn-udp
+              subPath: se493.nordvpn.com.udp1194.ovpn
               readOnly: false
             - mountPath: /downloads
               name: qb-nfs0
@@ -88,6 +92,9 @@ spec:
         - persistentVolumeClaim:
             claimName: qb-longhorn
           name: qb-conf
+        - name: test-openvpn
+          configMap:
+            name: test-openvpn
         - name: test-openvpn-udp
           configMap:
             name: test-openvpn-udp
@@ -100,18 +107,6 @@ spec:
             path: /etc/timezone
           name: qbittorrentvpn-hostpath
 status: {}
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: gluetun-longhorn
-spec:
-  storageClassName: longhorn
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 500Mi
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
