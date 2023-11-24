@@ -74,6 +74,10 @@ spec:
           volumeMounts:
             - mountPath: /config
               name: qb-conf
+            - mountPath: /config/openvpn
+              name: test-openvpn
+            - mountPath: /config/openvpn
+              name: test-openvpn-upd
             - mountPath: /downloads
               name: qb-nfs0
             - mountPath: /etc/timezone
@@ -84,6 +88,12 @@ spec:
         - persistentVolumeClaim:
             claimName: qb-longhorn
           name: qb-conf
+        - name: test-openvpn
+          configMap:
+            name: test-openvpn
+        - name: test-openvpn-upd
+          configMap:
+            name: test-openvpn-upd
         - nfs:
             server: 192.168.1.19
             readOnly: false
