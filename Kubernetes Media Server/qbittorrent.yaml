@@ -26,6 +26,9 @@ spec:
         io.kompose.network/dockermediaserver-default: "true"
         io.kompose.service: qbittorrent
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
       imagePullSecrets:
         - name: regcred
       containers:
