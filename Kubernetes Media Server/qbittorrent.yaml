@@ -77,7 +77,7 @@ spec:
             - mountPath: /config/openvpn/se493.tcp.openvpn
               name: test-openvpn
             - mountPath: /config/openvpn/se493.udp.openvpn
-              name: test-openvpn-upd
+              name: test-openvpn-udp
             - mountPath: /downloads
               name: qb-nfs0
             - mountPath: /etc/timezone
@@ -91,9 +91,9 @@ spec:
         - name: test-openvpn
           configMap:
             name: test-openvpn
-        - name: test-openvpn-upd
+        - name: test-openvpn-udp
           configMap:
-            name: test-openvpn-upd
+            name: test-openvpn-udp
         - nfs:
             server: 192.168.1.19
             readOnly: false
