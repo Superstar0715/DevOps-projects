@@ -45,7 +45,7 @@ spec:
             - name: K8S_CLUSTER
               value: "yes"
             - name: K8S_POD_CIDR
-              value: 10.1.0.0/16
+              value: 10.0.0.0/8
             - name: K8S_SVC_CIDR
               value: 10.152.183.0/24
             - name: PUID
