@@ -76,8 +76,10 @@ spec:
               name: qb-conf
             - mountPath: /config/openvpn
               name: test-openvpn
+              subPath: se493.tcp.openvpn
             - mountPath: /config/openvpn
               name: test-openvpn-upd
+              subPath: se493.udp.openvpn
             - mountPath: /downloads
               name: qb-nfs0
             - mountPath: /etc/timezone
