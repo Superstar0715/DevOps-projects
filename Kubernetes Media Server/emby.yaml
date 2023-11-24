@@ -27,15 +27,16 @@ spec:
         io.kompose.network/dockermediaserver-default: "true"
         io.kompose.service: emby
     spec:
-      securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
       containers:
         - env:
+          # - name: GID
+          #   value: "1000"
             - name: GIDLIST
               value: "44"
             - name: TZ
               value: "America/New_York"
+          # - name: UID
+          #   value: "1000"
           image: emby/embyserver
           name: emby
           ports:

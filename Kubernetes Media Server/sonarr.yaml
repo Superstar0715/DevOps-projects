@@ -26,9 +26,6 @@ spec:
         io.kompose.network/dockermediaserver-default: "true"
         io.kompose.service: sonarr
     spec:
-      securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
       containers:
         - env:
             - name: TZ
