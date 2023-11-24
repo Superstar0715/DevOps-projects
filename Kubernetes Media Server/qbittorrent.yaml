@@ -74,9 +74,7 @@ spec:
           volumeMounts:
             - mountPath: /config
               name: qb-conf
-            - mountPath: /config/openvpn/se493.nordvpn.com.tcp443.ovpn
-              name: test-openvpn
-            - mountPath: /config/openvpn/se493.nordvpn.com.udp1194.ovpn
+            - mountPath: /config/openvpn
               name: test-openvpn-udp
             - mountPath: /downloads
               name: qb-nfs0
@@ -88,9 +86,6 @@ spec:
         - persistentVolumeClaim:
             claimName: qb-longhorn
           name: qb-conf
-        - name: test-openvpn
-          configMap:
-            name: test-openvpn
         - name: test-openvpn-udp
           configMap:
             name: test-openvpn-udp
