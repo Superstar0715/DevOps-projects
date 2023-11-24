@@ -74,8 +74,10 @@ spec:
           volumeMounts:
             - mountPath: /config
               name: qb-conf
+              readOnly: false
             - mountPath: /config/openvpn
               name: test-openvpn-udp
+              readOnly: false
             - mountPath: /downloads
               name: qb-nfs0
             - mountPath: /etc/timezone
