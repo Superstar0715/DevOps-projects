@@ -76,11 +76,11 @@ spec:
             - mountPath: /config
               name: qb-conf
             - mountPath: /config/openvpn/se493.nordvpn.com.tcp443.ovpn
-              name: test-openvpn
+              name: openvpn-tcp
               subPath: se493.nordvpn.com.tcp443.ovpn
               readOnly: false
             - mountPath: /config/openvpn/se493.nordvpn.com.udp1194.ovpn
-              name: test-openvpn-udp
+              name: openvpn-udp
               subPath: se493.nordvpn.com.udp1194.ovpn
               readOnly: false
             - mountPath: /downloads
@@ -93,12 +93,12 @@ spec:
         - persistentVolumeClaim:
             claimName: qb-longhorn
           name: qb-conf
-        - name: test-openvpn
+        - name: openvpn-tcp
           configMap:
-            name: test-openvpn
-        - name: test-openvpn-udp
+            name: openvpn-tcp
+        - name: openvpn-udp
           configMap:
-            name: test-openvpn-udp
+            name: openvpn-udp
         - nfs:
             server: 192.168.1.19
             readOnly: false
