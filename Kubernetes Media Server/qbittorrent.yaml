@@ -30,7 +30,7 @@ spec:
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 0
-        fsGrpupChangePolicy: "OnRootMismatch"
+        fsGroupChangePolicy: "OnRootMismatch"
       imagePullSecrets:
         - name: regcred
       containers:
