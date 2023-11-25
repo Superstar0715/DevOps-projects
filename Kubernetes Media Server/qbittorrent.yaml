@@ -32,7 +32,7 @@ spec:
         - securityContext:
             fsGroup: 0
             capabilities:
-              add: NET_ADMIN
+              add: [ NET_ADMIN ]
           env:
             - name: VPN_ENABLED
               value: "yes"
