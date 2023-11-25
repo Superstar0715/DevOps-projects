@@ -30,9 +30,12 @@ spec:
         - name: regcred
       containers:
         - securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
             fsGroup: 0
+            fsGrpupChangePolicy: "OnRootMismatch"
             capabilities:
-              add: [ NET_ADMIN ]
+              add: [ "NET_ADMIN" ]
           env:
             - name: VPN_ENABLED
               value: "yes"
