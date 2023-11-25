@@ -92,7 +92,9 @@ spec:
             - mountPath: /downloads
               name: qb-nfs0
             - mountPath: /etc/timezone
-              name: qbittorrentvpn-hostpath
+              name: qbittorrentvpn-hostpath0
+              readOnly: true
+            - mountPath: /dev/net/tun
               readOnly: true
       restartPolicy: Always
       volumes:
@@ -112,7 +114,10 @@ spec:
           name: qb-nfs0
         - hostPath:
             path: /etc/timezone
-          name: qbittorrentvpn-hostpath
+          name: qbittorrentvpn-hostpath0
+        - hostPath:
+            path: /dev/net/tun
+          name: qbittorrentvpn-hostpath1
 status: {}
 ---
 apiVersion: v1
