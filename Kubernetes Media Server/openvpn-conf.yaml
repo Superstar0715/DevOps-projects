@@ -23,6 +23,7 @@ data:
     remote-cert-tls server
 
     auth-user-pass credentials.conf
+
     verb 3
     pull
     fast-io
@@ -113,6 +114,7 @@ data:
     remote-cert-tls server
 
     auth-user-pass credentials.conf
+
     verb 3
     pull
     fast-io
