@@ -27,9 +27,7 @@ spec:
         io.kompose.service: qbittorrent
     spec:
       securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
+        fsGroup: 0
         fsGroupChangePolicy: "OnRootMismatch"
       imagePullSecrets:
         - name: regcred
