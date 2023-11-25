@@ -28,12 +28,12 @@ spec:
     spec:
       imagePullSecrets:
         - name: regcred
-      securityContext:
-        fsGroup: 0
-        capabilities:
-          add: NET_ADMIN
       containers:
-        - env:
+        - securityContext:
+            fsGroup: 0
+            capabilities:
+              add: NET_ADMIN
+          env:
             - name: VPN_ENABLED
               value: "yes"
             - name: VPN_USERNAME
@@ -53,9 +53,9 @@ spec:
             - name: K8S_SVC_CIDR
               value: 10.152.183.0/24
             - name: PUID
-              value: "0"
+              value: "1000"
             - name: PGID
-              value: "0"
+              value: "1000"
             - name: LAN_CIDR
               value: 192.168.1.0/24
             - name: NAME_SERVERS
