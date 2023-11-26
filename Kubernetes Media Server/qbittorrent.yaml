@@ -53,7 +53,7 @@ spec:
             - name: K8S_POD_CIDR
               value: 10.0.0.0/8
             - name: K8S_SVC_CIDR
-              value: 10.152.183.0/24
+              value: 10.96.0.0/12
             - name: PUID
               value: "1000"
             - name: PGID
