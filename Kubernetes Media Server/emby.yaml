@@ -27,11 +27,11 @@ spec:
         io.kompose.network/dockermediaserver-default: "true"
         io.kompose.service: emby
     spec:
-      securityContexts:
+      securityContext:
         runAsUser: 1000
         runAsGroup: 1000
       containers:
-        - securityContexts:
+        - securityContext:
             runAsUser: 1000
             runAsGroup: 1000
           env:
