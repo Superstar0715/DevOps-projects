@@ -27,14 +27,8 @@ spec:
         io.kompose.network/dockermediaserver-default: "true"
         io.kompose.service: emby
     spec:
-      securityContexts:
-        runAsUser: 1000
-        runAsGroup: 1000
       containers:
-        - securityContexts:
-            runAsUser: 1000
-            runAsGroup: 1000
-          env:
+        - env:
           # - name: GID
           #   value: "1000"
             - name: GIDLIST
