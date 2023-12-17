@@ -96,7 +96,6 @@ spec:
               readOnly: true
             - mountPath: /dev/net/tun
               name: qbittorrentvpn-hostpath1
-              readOnly: true
       restartPolicy: Always
       volumes:
         - persistentVolumeClaim:
