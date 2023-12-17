@@ -30,7 +30,7 @@ spec:
           env:
             # may be needed to do split tunnels on k8s
             - name: FIREWALL_INPUT_PORTS
-              value: 8080 #guessing this needs to be added
+              value: "8080" #guessing this needs to be added
             - name: FIREWALL_OUTBOUND_SUBNETS
               value: "192.168.1.0/24,10.0.0.0/8,10.96.0.0/12" 
                 #first one is LAN CIDR, change to /17 after changeover
