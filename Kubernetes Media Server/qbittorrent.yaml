@@ -33,8 +33,8 @@ spec:
         - name: regcred
       containers:
         - securityContext:
+            privileged: true
             capabilities:
-              privileged: true
               add: [ "NET_ADMIN" ]
           env:
             - name: VPN_ENABLED
