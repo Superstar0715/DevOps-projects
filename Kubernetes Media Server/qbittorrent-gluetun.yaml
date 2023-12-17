@@ -1,0 +1,189 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+  labels:
+    io.kompose.service: qbittorrent
+  name: qbittorrent
+  namespace: mediaserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: qbittorrent
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        io.kompose.network/dockermediaserver-default: "true"
+        io.kompose.service: qbittorrent
+    spec:
+      containers:
+        - name: gluetun
+          image: ghcr.io/qdm12/gluetun
+          imagePullPolicy: Always
+          securityContext:
+            capabilities:
+              add: 
+                - "NET_ADMIN"
+          env:
+            # may be needed to do split tunnels on k8s
+            - name: FIREWALL_INPUT_PORTS
+              value: 8080 #guessing this needs to be added
+            - name: FIREWALL_OUTBOUND_SUBNETS
+              value: "192.168.1.0/24,10.0.0.0/8,10.96.0.0/12" 
+                #first one is LAN CIDR, change to /17 after changeover
+            - name: TZ
+              value: America/New_York
+            - name: VPN_TYPE
+              value: "openvpn"
+            - name: VPN_SERVICE_PROVIDER
+              value: "nordvpn"
+            - name: OPENVPN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: vpn-secret
+                  key: username
+            - name: OPENVPN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: vpn-secret
+                  key: password
+          volumeMounts:
+            - mountPath: /gluetun
+              name: gluetun-conf
+        - env:
+            - name: K8S_CLUSTER
+              value: "yes"
+            - name: K8S_POD_CIDR
+              value: 10.1.0.0/16
+            - name: K8S_SVC_CIDR
+              value: 10.152.183.0/24
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: LAN_CIDR
+              value: 192.168.1.0/24
+            - name: NAME_SERVERS
+              value: 1.1.1.1,1.0.0.1
+            - name: WEBUI_PORT_ENV
+              value: "8080"
+          image: linuxserver/qbittorrent
+            # securityContext:
+            # privileged: true
+              #            capabilities:
+              # add:
+              #  - "NET_ADMIN"
+          name: qbittorrent
+          ports:
+            - containerPort: 8080
+            - containerPort: 6881
+            - containerPort: 6881
+              protocol: UDP
+          resources: {}
+          volumeMounts:
+            - mountPath: /config
+              name: qb-conf
+            - mountPath: /downloads
+              name: qb-nfs0
+            - mountPath: /etc/timezone
+              name: qbittorrentvpn-hostpath
+              readOnly: true
+      restartPolicy: Always
+      volumes:
+        - persistentVolumeClaim:
+            claimName: qb-longhorn
+          name: qb-conf
+        - nfs:
+            server: 192.168.1.19
+            readOnly: false
+            path: /mnt/Main/kubernetes/Torrents
+          name: qb-nfs0
+        - persistentVolumeClaim:
+            claimName: gluetun-longhorn
+          name: gluetun-conf
+        - hostPath:
+            path: /etc/timezone
+          name: qbittorrentvpn-hostpath
+status: {}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gluetun-longhorn
+spec:
+  storageClassName: longhorn
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 500Mi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: qb-longhorn
+spec:
+  storageClassName: longhorn
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 500Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert --volumes hostPath
+    kompose.version: 1.28.0 (c4137012e)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: qbittorrent
+  name: qbittorrent
+  namespace: mediaserver
+spec:
+  ports:
+    - name: "8080"
+      port: 8080
+      targetPort: 8080
+    - name: "6881"
+      port: 6881
+      targetPort: 6881
+    - name: 6881-udp
+      port: 6881
+      protocol: UDP
+      targetPort: 6881
+  selector:
+    io.kompose.service: qbittorrent
+status:
+  loadBalancer: {}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: "cloudflare-issuer"
+  name: qbittorrent-ingress-private
+  namespace: mediaserver
+spec:
+  ingressClassName: private-nginx
+  tls:
+  - hosts:
+      - qbittorrent.andrewsutliff.com
+    secretName: qbittorrent-http-tls
+  rules:
+  - host: "qbittorrent.andrewsutliff.com"
+    http:
+      paths:
+      - backend:
+          service:
+            name: qbittorrent
+            port:
+              number: 8080
+        path: /
+        pathType: Prefix
+
