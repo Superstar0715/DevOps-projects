@@ -34,6 +34,7 @@ spec:
       containers:
         - securityContext:
             capabilities:
+              privileged: true
               add: [ "NET_ADMIN" ]
           env:
             - name: VPN_ENABLED
