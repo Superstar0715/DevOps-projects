@@ -151,7 +151,7 @@ spec:
       targetPort: 8080
     - name: "6881"
       port: 6881
-      targetPort: 8999
+      targetPort: 6881
     - name: 6881-udp
       port: 6881
       protocol: UDP
