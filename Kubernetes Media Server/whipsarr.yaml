@@ -77,7 +77,7 @@ spec:
   ports:
     - name: "6969"
       port: 6969
-      targetPort: 8989
+      targetPort: 6969
   selector:
     io.kompose.service: whisparr
 status:
