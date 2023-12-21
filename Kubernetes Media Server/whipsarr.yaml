@@ -1,0 +1,110 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+  labels:
+    io.kompose.service: whisparr
+  name: whisparr
+  namespace: mediaserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: whisparr
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+      labels:
+        io.kompose.service: whisparr
+    spec:
+      containers:
+        - env:
+            - name: TZ
+              value: America/New_York
+            - name: UMASK
+              value: "022"
+          image: cr.hotio.dev/hotio/whisparr:nightly
+          name: whisparr
+          ports:
+            - containerPort: 6969
+          resources: {}
+          volumeMounts:
+            - mountPath: /config
+              name: whisparr-conf
+            - mountPath: /xxx
+              name: whisparr-nfs0
+            - mountPath: /downloads
+              name: whisparr-nfs1
+      restartPolicy: Always
+      volumes:
+        - persistentVolumeClaim:
+            claimName: whisparr-longhorn
+          name: whisparr-conf
+        - nfs:
+            server: 192.168.1.19
+            path: /mnt/Main/kubernetes/XXX
+            readOnly: false
+          name: whisparr-nfs0
+        - nfs:
+            server: 192.168.1.19
+            path: /mnt/Main/kubernetes/Torrents
+            readOnly: false
+          name: whisparr-nfs1
+status: {}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: whisparr-longhorn
+spec:
+  storageClassName: longhorn
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 500Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    io.kompose.service: whisparr
+  name: whisparr
+  namespace: mediaserver
+spec:
+  ports:
+    - name: "6969"
+      port: 6969
+      targetPort: 8989
+  selector:
+    io.kompose.service: whisparr
+status:
+  loadBalancer: {}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: "cloudflare-issuer"
+  name: whisparr-ingress-private
+  namespace: mediaserver
+spec:
+  ingressClassName: private-nginx
+  tls:
+  - hosts:
+      - whisparr.andrewsutliff.com
+    secretName: whisparr-http-tls
+  rules:
+  - host: "whisparr.andrewsutliff.com"
+    http:
+      paths:
+      - backend:
+          service:
+            name: whisparr
+            port:
+              number: 6969
+        path: /
+        pathType: Prefix
