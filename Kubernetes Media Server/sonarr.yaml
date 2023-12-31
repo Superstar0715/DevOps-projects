@@ -33,6 +33,7 @@ spec:
             - name: UMASK
               value: "022"
           image: linuxserver/sonarr
+          imagePullPolicy: Always
           name: sonarr
           ports:
             - containerPort: 8989
