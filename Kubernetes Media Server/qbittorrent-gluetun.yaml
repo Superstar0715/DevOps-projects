@@ -54,20 +54,10 @@ spec:
             - mountPath: /gluetun
               name: gluetun-conf
         - env:
-            - name: K8S_CLUSTER
-              value: "yes"
-            - name: K8S_POD_CIDR
-              value: 10.1.0.0/16
-            - name: K8S_SVC_CIDR
-              value: 10.152.183.0/24
             - name: PUID
               value: "1000"
             - name: PGID
               value: "1000"
-            - name: LAN_CIDR
-              value: 192.168.1.0/24
-            - name: NAME_SERVERS
-              value: 1.1.1.1,1.0.0.1
             - name: WEBUI_PORT_ENV
               value: "8080"
           image: linuxserver/qbittorrent
