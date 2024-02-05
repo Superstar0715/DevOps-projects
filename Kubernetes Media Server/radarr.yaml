@@ -50,12 +50,12 @@ spec:
             claimName: radarr-longhorn
           name: radarr-conf
         - nfs:
-            server: 192.168.1.19
+            server: 172.31.1.10
             path: /mnt/Main/kubernetes/Movies
             readOnly: false
           name: radarr-nfs0
         - nfs:
-            server: 192.168.1.19
+            server: 172.31.1.10
             path: /mnt/Main/kubernetes/Torrents
             readOnly: false
           name: radarr-nfs1

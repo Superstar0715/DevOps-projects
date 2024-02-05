@@ -60,17 +60,17 @@ spec:
             claimName: emby-longhorn
           name: emby-conf
         - nfs:
-            server: 192.168.1.19
+            server: 172.31.1.10
             readOnly: false
             path: /mnt/Main/kubernetes/TV
           name: emby-nfs0
         - nfs:
-            server: 192.168.1.19
+            server: 172.31.1.10
             readOnly: false
             path: /mnt/Main/kubernetes/Movies
           name: emby-nfs1
         - nfs:
-            server: 192.168.1.19
+            server: 172.31.1.10
             readOnly: false
             path: /mnt/Main/kubernetes/XXX
           name: emby-nfs2
