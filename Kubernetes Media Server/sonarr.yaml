@@ -51,12 +51,12 @@ spec:
             claimName: sonarr-longhorn
           name: sonarr-conf
         - nfs:
-            server: 172.31.1.10
+            server: 172.31.0.15
             path: /mnt/Main/kubernetes/TV
             readOnly: false
           name: sonarr-nfs0
         - nfs:
-            server: 172.31.1.10
+            server: 172.31.0.15
             path: /mnt/Main/kubernetes/Torrents
             readOnly: false
           name: sonarr-nfs1

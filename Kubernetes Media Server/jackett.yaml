@@ -46,7 +46,7 @@ spec:
             claimName: jackett-longhorn
           name: jackett-conf
         - nfs:
-            server: 172.31.1.10
+            server: 172.31.0.15
             readOnly: false
             path: /mnt/Main/kubernetes/Torrents
           name: jackett-nfs0
