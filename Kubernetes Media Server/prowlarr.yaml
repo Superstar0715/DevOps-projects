@@ -6,14 +6,14 @@ metadata:
     kompose.version: 1.28.0 (c4137012e)
   creationTimestamp: null
   labels:
-    io.kompose.service: jackett
-  name: jackett
+    io.kompose.service: prowlarr
+  name: prowlarr
   namespace: mediaserver
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: jackett
+      io.kompose.service: prowlarr
   strategy:
     type: Recreate
   template:
@@ -24,38 +24,31 @@ spec:
       creationTimestamp: null
       labels:
         io.kompose.network/dockermediaserver-default: "true"
-        io.kompose.service: jackett
+        io.kompose.service: prowlarr
     spec:
       containers:
         - env:
             - name: TZ
               value: America/New_York
-          image: linuxserver/jackett
-          name: jackett
+          image: linuxserver/prowlarr
+          name: prowlarr
           ports:
-            - containerPort: 9117
+            - containerPort: 9696
           resources: {}
           volumeMounts:
             - mountPath: /config
-              name: jackett-conf
-            - mountPath: /downloads
-              name: jackett-nfs0
+              name: prowlarr-conf
       restartPolicy: Always
       volumes:
         - persistentVolumeClaim:
-            claimName: jackett-longhorn
-          name: jackett-conf
-        - nfs:
-            server: 172.31.0.15
-            readOnly: false
-            path: /mnt/Main/kubernetes/Torrents
-          name: jackett-nfs0
+            claimName: prowlarr-longhorn
+          name: prowlarr-conf
 status: {}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: jackett-longhorn
+  name: prowlarr-longhorn
 spec:
   storageClassName: longhorn
   accessModes:
@@ -72,16 +65,16 @@ metadata:
     kompose.version: 1.28.0 (c4137012e)
   creationTimestamp: null
   labels:
-    io.kompose.service: jackett
-  name: jackett
+    io.kompose.service: prowlarr
+  name: prowlarr
   namespace: mediaserver
 spec:
   ports:
-    - name: "9117"
-      port: 9117
-      targetPort: 9117
+    - name: "9696"
+      port: 9696
+      targetPort: 9696
   selector:
-    io.kompose.service: jackett
+    io.kompose.service: prowlarr
 status:
   loadBalancer: {}
 ---
@@ -91,23 +84,23 @@ metadata:
   annotations:
     ingress.kubernetes.io/ssl-redirect: "false"
     cert-manager.io/cluster-issuer: "cloudflare-issuer"
-  name: jackett-ingress-private
+  name: prowlarr-ingress-private
   namespace: mediaserver
 spec:
   ingressClassName: private-nginx
   tls:
   - hosts:
-      - jackett.andrewsutliff.com
-    secretName: jackett-http-tls
+      - prowlarr.andrewsutliff.com
+    secretName: prowlarr-http-tls
   rules:
-  - host: "jackett.andrewsutliff.com"
+  - host: "prowlarr.andrewsutliff.com"
     http:
       paths:
       - backend:
           service:
-            name: jackett
+            name: prowlarr
             port:
-              number: 9117
+              number: 9696
         path: /
         pathType: Prefix
 
