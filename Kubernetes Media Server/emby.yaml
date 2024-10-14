@@ -26,7 +26,7 @@ spec:
       securityContext:
         #runAsUser: 1002
         #runAsGroup: 1002
-        #fsGroup: 1002
+        fsGroup: 1002
       containers:
         - env:
             - name: GID
