@@ -35,7 +35,7 @@ spec:
                 # value: "192.168.1.0/24,10.0.0.0/8,10.96.0.0/12" 
                 #first one is LAN CIDR, change to /17 after changeover
             - name: PORT_FORWARD_ONLY
-              value: true
+              value: "true"
             - name: VPN_PORT_FORWARD
               value: "on"
             - name: FIREWALL_VPN_INPUT_PORTS
