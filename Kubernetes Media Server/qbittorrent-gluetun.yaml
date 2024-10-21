@@ -38,8 +38,6 @@ spec:
               value: "true"
             - name: VPN_PORT_FORWARD
               value: "on"
-            - name: FIREWALL_VPN_INPUT_PORTS
-              value: "6881"
             - name: TZ
               value: America/New_York
             - name: VPN_SERVICE_PROVIDER
