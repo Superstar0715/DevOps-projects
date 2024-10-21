@@ -34,6 +34,8 @@ spec:
                 # - name: FIREWALL_OUTBOUND_SUBNETS
                 # value: "192.168.1.0/24,10.0.0.0/8,10.96.0.0/12" 
                 #first one is LAN CIDR, change to /17 after changeover
+            - name: FIREWALL_VPN_INPUT_PORTS
+              value: "6881"
             - name: TZ
               value: America/New_York
             - name: VPN_TYPE
