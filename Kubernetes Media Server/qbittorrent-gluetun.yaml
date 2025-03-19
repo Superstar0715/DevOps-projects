@@ -86,7 +86,7 @@ spec:
               - bash
               - -c
               - "curl -Lic cookie --header 'Referer: http://localhost:8080' http://localhost:8080/api/v2/auth/login --data 'username=admin&password='$QBITTORRENTPASS''"
-              - "curl -Lb cookie http://localhost:8080/api/v2/transfer/info | jq .connection_status | grep -c 'firewalled'"
+              - "curl -sLb cookie http://localhost:8080/api/v2/transfer/info | jq .connection_status | grep -c 'firewalled'"
            initialDelaySeconds: 20
            periodSeconds: 20
            timeoutSeconds: 5
