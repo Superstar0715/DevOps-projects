@@ -52,9 +52,21 @@ spec:
                 secretKeyRef:
                   name: vpn-secret
                   key: password
+            - name: QBITTORRENTPASS
+              valueFrom:
+                secretKeyRef:
+                  name: qbittorrent-secret
+                  key: password
           volumeMounts:
             - mountPath: /gluetun
               name: gluetun-conf
+         livenessProbe:
+           exec:
+            command:
+              - bash
+              - -c
+              - curl -Lic cookie --header 'Referer: http://localhost:8080' http://localhost:8080/api/v2/auth/login --data 'username=admin&password=$QBITTORRENTPASS'
+              - curl -Lb cookie localhost:8080/api/v2/transfer/info | jq .connection_status | grep -c 'firewalled'
         - env:
             - name: PUID
               value: "1000"
