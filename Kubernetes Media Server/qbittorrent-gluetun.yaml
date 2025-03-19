@@ -80,16 +80,16 @@ spec:
             - containerPort: 6881
               protocol: UDP
           resources: {}
-          #livenessProbe:
-          #exec:
-          #command:
-          #- bash
-          #- -c
-          #- "curl -sLic cookie --header 'Referer: http://localhost:8080' http://localhost:8080/api/v2/auth/login --data 'username=admin&password='$QBITTORRENTPASS'' >> /dev/null && curl -sLb cookie http://localhost:8080/api/v2/transfer/info | jq .connection_status | grep -c 'firewalled'"
-          #initialDelaySeconds: 15
-          #periodSeconds: 20
-          #timeoutSeconds: 5
-          #failureThreshold: 1
+          livenessProbe:
+           exec:
+            command:
+            - bash
+            - -c
+            - "curl -sLic cookie --header 'Referer: http://localhost:8080' http://localhost:8080/api/v2/auth/login --data 'username=admin&password='$QBITTORRENTPASS'' >> /dev/null && curl -sLb cookie http://localhost:8080/api/v2/transfer/info | jq .connection_status | grep 'connected'"
+           initialDelaySeconds: 15
+           periodSeconds: 20
+           timeoutSeconds: 5
+           failureThreshold: 1
           volumeMounts:
             - mountPath: /config
               name: qb-conf
