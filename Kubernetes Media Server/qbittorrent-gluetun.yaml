@@ -85,8 +85,8 @@ spec:
             command:
               - bash
               - -c
-              - "curl -Lic cookie --header 'Referer: http://localhost:8080' http://localhost:8080/api/v2/auth/login --data 'username=admin&password=$QBITTORRENTPASS'"
-              - "curl -Lb cookie localhost:8080/api/v2/transfer/info | jq .connection_status | grep -c 'firewalled'"
+              - "curl -Lic cookie --header 'Referer: $QBITTORRENT_SERVICE_HOST:8080' QBITTORRENT_SERVICE_HOST:8080/api/v2/auth/login --data 'username=admin&password=$QBITTORRENTPASS'"
+              - "curl -Lb cookie $QBITTORRENT_SERVICE_HOST:8080/api/v2/transfer/info | jq .connection_status | grep -c 'firewalled'"
           volumeMounts:
             - mountPath: /config
               name: qb-conf
