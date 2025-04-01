@@ -36,8 +36,10 @@ spec:
                 #first one is LAN CIDR, change to /17 after changeover
             - name: PORT_FORWARD_ONLY
               value: "true"
-            - name: VPN_PORT_FORWARD
+            - name: VPN_PORT_FORWARDING
               value: "on"
+            - name: SERVER_REGIONS
+              value: "US East"
             - name: TZ
               value: America/New_York
             - name: VPN_SERVICE_PROVIDER
