@@ -38,8 +38,6 @@ spec:
               value: "true"
             - name: VPN_PORT_FORWARDING
               value: "on"
-            - name: SERVER_REGIONS
-              value: "US East"
             - name: TZ
               value: America/New_York
             - name: VPN_SERVICE_PROVIDER
