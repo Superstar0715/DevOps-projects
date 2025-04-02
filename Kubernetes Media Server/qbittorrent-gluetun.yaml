@@ -39,7 +39,7 @@ spec:
             - name: VPN_PORT_FORWARDING
               value: "on"
             - name: VPN_PORT_FORWARDING_UP_COMMAND
-            - value: |
+              value: |
                 /bin/sh -c "curl -sLic cookie --header 'Referer: http://localhost:8080' http://localhost:8080/api/v2/auth/login --data 'username=admin&password='$QBITTORRENTPASS'' && 'curl -sLb -X POST cookie http://localhost:8080/api/v2/app/setPreferences --data 'json={\"listen_port\":{{PORTS}}'"
             - name: TZ
               value: America/New_York
