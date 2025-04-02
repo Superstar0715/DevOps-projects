@@ -3,14 +3,7 @@
 ## Overview
  The goal of this repository is to give me the hands-on experience with popular DevOps tools, while using Git to deploy them. I've used some of these technologies to accomplish personal goals, such as deploying a web app or creating a home media server and created some projects more like what one might find in a business production environment, such as setting up a Kubernetes cluster, tech stack, or network. If it exists in the tech world, I will find a way to automate and deploy it from the comfort of my house. 
 
-（[本説明文件有中文版本](https://github.com/Tanchwa/DevOps-Projects/blob/main/README.zh-hant.md))
- 
  ## Next Up
- * ~~Write a better README~~
- * Write a better README for all projects  
- * ~~Next Git based goal: Start using test branches to test new code changes. Until now, I had been writing in VS code and testing things in my local machine before pushing them to main.~~
- * ~~Start checking out new branches~~
- * ~~Terraform project with AWS autoscaling group and load balancer~~
  * Create a new GitHub Actions workflow for the Python app, and push it to DockerHub with the tag "test"
  * Create a test environment that automatically pulls this repository (tentative for cloud-based projects, money dependent) or deploys containers automatically to a cloud based Kubernetes cluster
  New Ansible Project: Use ansible to deploy and do a mock update to an analogous business network/ production environment.
@@ -53,15 +46,3 @@ To get the most out of this repository, clone the root directory.
  After studying for my Kubernetes Certified Administrator exam, I have also learned how to configure certificates, various RBAC resources, as well as setting up a cluster from scratch  
 ## Credits
  Although changes have been made to their original code to suit my needs, I couldn't have done a lot of this without the help of a couple YouTubers.  
-   * DB Tech's Docker Media Server  
-   https://www.youtube.com/playlist?list=PLhMI0SExGwfAdXDmYJ9jt_SxjkEfcUwEB  
-   * Tech World with Nana's Kubernetes Walkthrough  
-   https://www.youtube.com/watch?v=X48VuDVv0do&t=12399s  
-   
- No code was used from these channels directly, but still provided invaluable information.   
-  * The Digital Life  
-  https://www.youtube.com/c/TheDigitalLifeTech  
-  * Network Chuck  
-  https://www.youtube.com/c/NetworkChuck  
-  * Tutorial Linux  
-  https://www.youtube.com/c/tutoriaLinux  
