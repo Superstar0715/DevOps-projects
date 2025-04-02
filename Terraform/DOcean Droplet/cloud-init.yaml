@@ -8,7 +8,7 @@ groups:
   - docker
 
 users:
-  - name: tanchwa
+  - name: superstar
     lock_password: true
     shell: /bin/bash
     ssh_authorized_keys:
@@ -35,6 +35,5 @@ runcmd:
   - systemctl start docker && systemctl enable docker
   - curl -L "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
   - chmod +x /usr/local/bin/docker-compose
-  - docker pull tanchwa/mtg_card_organizer:latest
   - docker run -p8080:8080 tacnhwa/mtg_card_organizer
   - docker run --name watchtower -v /var/run/docker.sock:/var/run/docker.sock

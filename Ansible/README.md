@@ -23,7 +23,6 @@ Update 7/7/22: Unfortunately, cisco router images are not free, and ansible doen
 
 
 ## Requirements
-clone the Tanchwa/DevOps-Projects repository
 ansible installed on the machine you're working from
 have the ansible galaxy cisco modules installed from ansible
 

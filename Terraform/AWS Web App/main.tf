@@ -13,7 +13,7 @@ resource "aws_vpc" "main_vpc" {
 }
 
 resource "aws_key_pair" "aws_key" {
-  key_name = "Tanchwa_pc_aws"
+  key_name = "Superstar_pc_aws"
   public_key = file(var.public_key_path)
 }
 
@@ -375,9 +375,9 @@ resource "aws_cloudwatch_metric_alarm" "web_cpu_alarm_down" {
 
 
 /* resource "aws_s3_bucket" "webpage" {
-    bucket = "tanchwa-webpage"
+    bucket = "Superstar-webpage"
     tags    = {
-        Name = "tanchwa-webpage-bucket"
+        Name = "Superstar-webpage-bucket"
     }
 }
 resource "aws_s3_bucket_website_configuration" "webpage_config" {
